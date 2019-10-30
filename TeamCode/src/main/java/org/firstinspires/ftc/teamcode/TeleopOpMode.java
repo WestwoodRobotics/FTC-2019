@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import java.nio.channels.InterruptedByTimeoutException;
-import java.util.concurrent.TimeUnit;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -24,8 +23,11 @@ public class TeleopOpMode  extends OpMode {
 
     private Servo intakeServo = null;
 
-    boolean buttonState=true;
-    boolean numButton=true;
+    Double SLOWNESS = 0.2;
+    Double SPEED_MULTIPLIER = 1.25;
+
+    boolean buttonStateSlow=true;
+    boolean numButtonSlow=true;
 
     String intakeMotorsOn = "";
     String intakeOpen = "";
@@ -43,7 +45,7 @@ public class TeleopOpMode  extends OpMode {
 
 
     /*
-     * Code to run ONCE when the driver hits INIT
+     * Code to run ONCE when t+he driver hits INIT
      */
     @Override
     public void init() {
@@ -111,17 +113,18 @@ public class TeleopOpMode  extends OpMode {
         //double drive = -gamepad1.left_stick_y;
         //double turn  =  gamepad1.right_stick_x;
 
-        //Checking if A button is pressed and changing hold to click
-        if (gamepad1.a){
-            if (numButton) {
-                buttonState = !buttonState;
-                numButton=false;
+        //Checking if B button is pressed and changing hold to click for Slow mode
+        if (gamepad1.b){
+            if (numButtonSlow) {
+                buttonStateSlow= !buttonStateSlow;
+                numButtonSlow=false;
             }
         }
 
         else {
-            numButton=true;
+            numButtonSlow=true;
         }
+
 
         if(gamepad2.a){
             leftIntakePower = 1;
@@ -172,11 +175,37 @@ public class TeleopOpMode  extends OpMode {
             centerDrive.setPower(centerPower);
             leftDrive.setPower(0);
             rightDrive.setPower(0);
+
+        if (gamepad1.left_trigger>0 &&  gamepad1.right_trigger>0){
+            centerPower=0;
+        }
+        else if (gamepad1.left_trigger>0) {
+            centerPower = -gamepad1.left_trigger;
+
+        }else if (gamepad1.right_trigger>0){
+            centerPower=gamepad1.right_trigger;
+        }else{
+            centerPower=0;
+        }
+
+        if (buttonStateSlow){
+            centerPower=centerPower*SLOWNESS*2;
+            leftPower  = gamepad1.left_stick_y * SLOWNESS;
+            rightPower = gamepad1.right_stick_y * SLOWNESS ;
+        }else{
+            leftPower  = gamepad1.left_stick_y;
+            rightPower = gamepad1.right_stick_y;
         }
 
 
 
+
         // Show the elapsed game time and wheel power.
+
+        centerDrive.setPower(centerPower);
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+        telemetry.addData("Slow Mode: ", " " + buttonStateSlow);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Power", "Horizontal: (%.2f)", centerPower);
         telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
