@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import java.nio.channels.InterruptedByTimeoutException;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Basic: Iterative OpMode", group="Iterative OpMode")
-public class TeleopOpMode extends OpMode {
+public class TeleopOpMode  extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -14,15 +18,31 @@ public class TeleopOpMode extends OpMode {
     private DcMotor rightDrive = null;
     private DcMotor centerDrive = null;
 
+    private DcMotor leftIntakeDrive = null;
+    private DcMotor rightIntakeDrive = null;
+
+    private Servo intakeServo = null;
+
     Double SLOWNESS = 0.2;
     Double SPEED_MULTIPLIER = 1.25;
 
     boolean buttonStateSlow=true;
     boolean numButtonSlow=true;
 
+    String intakeMotorsOn = "";
+    String intakeOpen = "";
+
     double leftPower;
     double rightPower;
     double centerPower;
+
+    double intakeServoPower;
+
+    double intakeFunctionTime = 3;
+
+    double leftIntakePower;
+    double rightIntakePower;
+
 
     /*
      * Code to run ONCE when t+he driver hits INIT
@@ -38,6 +58,10 @@ public class TeleopOpMode extends OpMode {
         rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
         centerDrive = hardwareMap.get(DcMotor.class, "centerDrive");
 
+        leftIntakeDrive = hardwareMap.get(DcMotor.class, "leftIntakeDrive");
+        rightIntakeDrive = hardwareMap.get(DcMotor.class, "leftIntakeDrive");
+
+        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -45,7 +69,8 @@ public class TeleopOpMode extends OpMode {
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         centerDrive.setDirection(DcMotor.Direction.REVERSE);
 
-
+        leftIntakeDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightIntakeDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -69,9 +94,12 @@ public class TeleopOpMode extends OpMode {
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-    @Override
 
-    public void loop() {
+
+
+
+    @Override
+    public void loop(){
         // Setup a variable for each drive wheel to save power level for telemetry
 
 
@@ -92,9 +120,61 @@ public class TeleopOpMode extends OpMode {
                 numButtonSlow=false;
             }
         }
+
         else {
             numButtonSlow=true;
         }
+
+
+        if(gamepad2.a){
+            leftIntakePower = 1;
+            rightIntakePower = 1;
+            intakeMotorsOn = "ON";
+            intakeOpen = "OPEN";
+
+            leftIntakeDrive.setPower(leftIntakePower);
+            rightIntakeDrive.setPower(rightIntakePower);
+        }
+
+        else {
+            intakeMotorsOn = "OFF";
+            intakeOpen = "CLOSED";
+
+            leftIntakePower = 0;
+            rightIntakePower= 0;
+        }
+
+        if (intakeServo.getPosition() <= .5) {
+            intakeOpen = "CLOSED";
+        }
+
+        else {
+            intakeOpen = "OPEN";
+        }
+
+        if (gamepad2.x && !(intakeServo.getPosition() >= intakeServo.MAX_POSITION)) {
+            intakeServo.setPosition(intakeServo.getPosition() + (double)1/180);
+        }
+
+        else if (gamepad2.y && !gamepad2.x && !(intakeServo.getPosition() >= intakeServo.MIN_POSITION)) {
+            intakeServo.setPosition(intakeServo.getPosition() - (double)1/180);
+        }
+
+        if(buttonState){
+            //Tank Drive
+            leftPower  = gamepad1.left_stick_y ;
+            rightPower = gamepad1.right_stick_y ;
+            leftDrive.setPower(leftPower);
+            rightDrive.setPower(rightPower);
+            centerDrive.setPower(0);
+        }
+
+        else{
+            //Horizontal Movement
+            centerPower = gamepad1.right_stick_x ;
+            centerDrive.setPower(centerPower);
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
 
         if (gamepad1.left_trigger>0 &&  gamepad1.right_trigger>0){
             centerPower=0;
@@ -128,7 +208,10 @@ public class TeleopOpMode extends OpMode {
         telemetry.addData("Slow Mode: ", " " + buttonStateSlow);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Power", "Horizontal: (%.2f)", centerPower);
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+
+        telemetry.addData("Intake Motors", intakeMotorsOn);
+        telemetry.addData("Intake Open", intakeOpen);
 
     }
 
