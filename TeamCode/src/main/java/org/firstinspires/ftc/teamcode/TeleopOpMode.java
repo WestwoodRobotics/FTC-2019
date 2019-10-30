@@ -17,9 +17,6 @@ public class TeleopOpMode extends OpMode {
     Double SLOWNESS = 0.2;
     Double SPEED_MULTIPLIER = 1.25;
 
-    boolean buttonStateHorizontal=true;
-    boolean numButtonHorizontal=true;
-
     boolean buttonStateSlow=true;
     boolean numButtonSlow=true;
 
@@ -88,16 +85,6 @@ public class TeleopOpMode extends OpMode {
         //double drive = -gamepad1.left_stick_y;
         //double turn  =  gamepad1.right_stick_x;
 
-        //Checking if A button is pressed and changing hold to click for drive mode
-        if (gamepad1.a){
-            if (numButtonHorizontal) {
-                buttonStateHorizontal= !buttonStateHorizontal;
-                numButtonHorizontal=false;
-            }
-        }
-        else {
-            numButtonHorizontal=true;
-        }
         //Checking if B button is pressed and changing hold to click for Slow mode
         if (gamepad1.b){
             if (numButtonSlow) {
@@ -109,39 +96,36 @@ public class TeleopOpMode extends OpMode {
             numButtonSlow=true;
         }
 
-        if(buttonStateHorizontal){
-            //Tank Drive
-            if (buttonStateSlow){
-                leftPower  = gamepad1.left_stick_y * SLOWNESS;
-                rightPower = gamepad1.right_stick_y * SLOWNESS ;
-            }
-            else{
-                leftPower  = gamepad1.left_stick_y * SPEED_MULTIPLIER;
-                rightPower = gamepad1.right_stick_y * SPEED_MULTIPLIER;
-            }
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
-            centerDrive.setPower(0);
-            telemetry.addData("Mode: ", "Tank Drive");
+        if (gamepad1.left_trigger>0 &&  gamepad1.right_trigger>0){
+            centerPower=0;
         }
-        else{
-            //Horizontal Movement
-            if (buttonStateSlow){
-                centerPower = gamepad1.right_stick_x *SLOWNESS;
-            }
-            else{
-                centerPower = gamepad1.right_stick_x * SPEED_MULTIPLIER;
-            }
-            centerDrive.setPower(centerPower);
-            leftDrive.setPower(0);
-            rightDrive.setPower(0);
-            telemetry.addData("Mode: ", "Horizontal Drive");
+        else if (gamepad1.left_trigger>0) {
+            centerPower = -gamepad1.left_trigger;
+
+        }else if (gamepad1.right_trigger>0){
+            centerPower=gamepad1.right_trigger;
+        }else{
+            centerPower=0;
         }
+
+        if (buttonStateSlow){
+            centerPower=centerPower*SLOWNESS*2;
+            leftPower  = gamepad1.left_stick_y * SLOWNESS;
+            rightPower = gamepad1.right_stick_y * SLOWNESS ;
+        }else{
+            leftPower  = gamepad1.left_stick_y;
+            rightPower = gamepad1.right_stick_y;
+        }
+
 
 
 
         // Show the elapsed game time and wheel power.
-        telemetry.addData("Slow Mode: ", "Mode: " + buttonStateSlow);
+
+        centerDrive.setPower(centerPower);
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+        telemetry.addData("Slow Mode: ", " " + buttonStateSlow);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Power", "Horizontal: (%.2f)", centerPower);
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
