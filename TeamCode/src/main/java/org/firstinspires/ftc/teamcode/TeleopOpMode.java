@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,16 +14,21 @@ public class TeleopOpMode extends OpMode {
     private DcMotor rightDrive = null;
     private DcMotor centerDrive = null;
 
+    Double SLOWNESS = 0.2;
+    Double SPEED_MULTIPLIER = 1.25;
 
-    boolean buttonState=true;
-    boolean numButton=true;
+    boolean buttonStateHorizontal=true;
+    boolean numButtonHorizontal=true;
+
+    boolean buttonStateSlow=true;
+    boolean numButtonSlow=true;
 
     double leftPower;
     double rightPower;
     double centerPower;
 
     /*
-     * Code to run ONCE when the driver hits INIT
+     * Code to run ONCE when t+he driver hits INIT
      */
     @Override
     public void init() {
@@ -42,7 +46,7 @@ public class TeleopOpMode extends OpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        centerDrive.setDirection(DcMotor.Direction.FORWARD);
+        centerDrive.setDirection(DcMotor.Direction.REVERSE);
 
 
 
@@ -84,36 +88,60 @@ public class TeleopOpMode extends OpMode {
         //double drive = -gamepad1.left_stick_y;
         //double turn  =  gamepad1.right_stick_x;
 
-        //Checking if A button is pressed and changing hold to click
+        //Checking if A button is pressed and changing hold to click for drive mode
         if (gamepad1.a){
-            if (numButton) {
-                buttonState = !buttonState;
-                numButton=false;
+            if (numButtonHorizontal) {
+                buttonStateHorizontal= !buttonStateHorizontal;
+                numButtonHorizontal=false;
             }
         }
         else {
-            numButton=true;
+            numButtonHorizontal=true;
+        }
+        //Checking if B button is pressed and changing hold to click for Slow mode
+        if (gamepad1.b){
+            if (numButtonSlow) {
+                buttonStateSlow= !buttonStateSlow;
+                numButtonSlow=false;
+            }
+        }
+        else {
+            numButtonSlow=true;
         }
 
-        if(buttonState){
+        if(buttonStateHorizontal){
             //Tank Drive
-            leftPower  = gamepad1.left_stick_y ;
-            rightPower = gamepad1.right_stick_y ;
+            if (buttonStateSlow){
+                leftPower  = gamepad1.left_stick_y * SLOWNESS;
+                rightPower = gamepad1.right_stick_y * SLOWNESS ;
+            }
+            else{
+                leftPower  = gamepad1.left_stick_y * SPEED_MULTIPLIER;
+                rightPower = gamepad1.right_stick_y * SPEED_MULTIPLIER;
+            }
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
             centerDrive.setPower(0);
+            telemetry.addData("Mode: ", "Tank Drive");
         }
         else{
             //Horizontal Movement
-            centerPower = gamepad1.right_stick_x ;
+            if (buttonStateSlow){
+                centerPower = gamepad1.right_stick_x *SLOWNESS;
+            }
+            else{
+                centerPower = gamepad1.right_stick_x * SPEED_MULTIPLIER;
+            }
             centerDrive.setPower(centerPower);
             leftDrive.setPower(0);
             rightDrive.setPower(0);
+            telemetry.addData("Mode: ", "Horizontal Drive");
         }
 
 
 
         // Show the elapsed game time and wheel power.
+        telemetry.addData("Slow Mode: ", "Mode: " + buttonStateSlow);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Power", "Horizontal: (%.2f)", centerPower);
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
