@@ -94,9 +94,7 @@ public class TeleopOpMode  extends OpMode {
      */
 
 
-    public void sleep()throws InterruptedException{
-        TimeUnit.SECONDS.sleep(1);
-    }
+
 
     @Override
     public void loop(){
@@ -141,6 +139,14 @@ public class TeleopOpMode  extends OpMode {
 
             leftIntakePower = 0;
             rightIntakePower= 0;
+        }
+
+        if (intakeServo.getPosition() <= .5) {
+            intakeOpen = "CLOSED";
+        }
+
+        else {
+            intakeOpen = "OPEN";
         }
 
         if (gamepad2.x && !(intakeServo.getPosition() >= intakeServo.MAX_POSITION)) {
