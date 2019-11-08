@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
 import java.lang.Math;
 
 /**
@@ -45,15 +46,15 @@ import java.lang.Math;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
- *
+ * <p>
  * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
  * It includes all the skeletal structure that all iterative OpModes contain.
- *
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Arcade Mecanum OpMode", group="Iterative Opmode")
+@TeleOp(name = "Basic: Arcade Mecanum OpMode", group = "Iterative Opmode")
 public class BasicOpMode_ArcadeTest extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,8 +71,8 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
     private DcMotor vacuumMotor = null;
 
-    int servoPosition1 = 0;
-    int servoPosition2 = 0;
+    int servoPosition1 = 180;
+    int servoPosition2 = 180;
 
     int vacuumPower = 0;
 
@@ -105,7 +106,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
         bottomrightDrive.setDirection(DcMotor.Direction.REVERSE);
         topleftDrive.setDirection(DcMotor.Direction.FORWARD);
-        toprightDrive.setDirection(DcMotor.Direction.FORWARD);
+        toprightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -215,70 +216,51 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
 
         if (gamepad2.x) {
-            if (servoPosition1 < 166) {
-                servoPosition1 += 15;
-            } else {
-                servoPosition1 = 180;
-            }
+           servoPosition1 = 180;
+           servoPosition2 = 180;
         } else if (gamepad2.b) {
-            if (servoPosition1 > 14) {
-                servoPosition1 -= 15;
-            } else {
-                servoPosition1 = 0;
-            }
-
-            if (gamepad2.x) {
-                if (servoPosition2 < 166) {
-                    servoPosition2 += 15;
-                } else {
-                    servoPosition2 = 180;
-                }
-            } else if (gamepad2.b) {
-                if (servoPosition2 > 14) {
-                    servoPosition2 -= 15;
-                } else {
-                    servoPosition2 = 0;
-                }
-
-                if (gamepad1.left_trigger > .5) {
-                    vacuumMotor.setPower(1);
-                } else {
-                    vacuumMotor.setPower(0);
-                }
-            }
-
-
-            // Send calculated power to wheels
-            bottomleftDrive.setPower(bottomleftPower);
-            bottomrightDrive.setPower(bottomrightPower);
-            topleftDrive.setPower(topleftPower);
-            toprightDrive.setPower(toprightPower);
-            flipperServo1.setPosition(servoPosition1);
-            flipperServo1.setPosition(servoPosition2);
-            vacuumMotor.setPower(vacuumPower);
-
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
-                    topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle, leftStickX, leftStickY);
-            //telemetry.addData("VACUUM", "VStart (%2.f), VPressed (%2.f), VPause (%.2f)",
-                    //vStart ? 1.5 : 0, vPressed ? 1.5 : 0, vPause ? 1.5 : 0);
-
-            telemetry.addData("left Motor Position", topleftDrive.getCurrentPosition());
-
-            telemetry.addData("elevator motor power", elevatorMotor.getPower());
-
-            telemetry.addData("vacuumPower", vacuumMotor.getPower());
+            servoPosition1 = 0;
+            servoPosition2 = 0;
         }
+
+        if (gamepad1.left_trigger > .5) {
+            vacuumPower = 1;
+        } else {
+            vacuumPower = 0;
+        }
+
+        // Send calculated power to wheels
+        bottomleftDrive.setPower(bottomleftPower);
+        bottomrightDrive.setPower(bottomrightPower);
+        topleftDrive.setPower(topleftPower);
+        toprightDrive.setPower(toprightPower);
+        flipperServo1.setPosition(servoPosition1);
+        flipperServo2.setPosition(servoPosition2);
+        vacuumMotor.setPower(vacuumPower);
+
+
+        // Show the elapsed game time and wheel power.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
+                topleftPower, toprightPower, bottomleftPower, bottomrightPower, angle, leftStickX, leftStickY);
+        //telemetry.addData("VACUUM", "VStart (%2.f), VPressed (%2.f), VPause (%.2f)",
+        //vStart ? 1.5 : 0, vPressed ? 1.5 : 0, vPause ? 1.5 : 0);
+
+        telemetry.addData("left Motor Position", topleftDrive.getCurrentPosition());
+
+        telemetry.addData("elevator motor power", elevatorMotor.getPower());
+
+        telemetry.addData("vacuumPower", vacuumMotor.getPower());
+
 
         /*
          * Code to run ONCE after the driver hits STOP
          */
 
     }
-    public void stop(){
-        
+
+    public void stop() {
+
     }
 }
 
