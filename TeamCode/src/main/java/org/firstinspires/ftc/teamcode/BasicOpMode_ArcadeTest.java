@@ -80,12 +80,14 @@ public class BasicOpMode_ArcadeTest extends OpMode {
     boolean vPressed = false;
     boolean vPause = false;
 
+    double eHeight = 0;
+
     /*
     3 * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+        //telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -147,22 +149,24 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
         double angle = Math.atan((leftStickY) / (leftStickX));
 
-        /*if(vPause == false){
-            if(gamepad2.x && vStart == false && vPressed == false){
+        if(vPause == false){
+            if((gamepad2.left_trigger > 0.5) && vStart == false && vPressed == false){
                 vStart = true;
                 vPressed = true;
+                vacuumMotor.setPower(0);
             }
-            else if(!gamepad2.x && vStart == true){
+            else if(!(gamepad2.left_trigger > 0.5) && vStart == true){
                 vPressed = false;
-                //vacuumMotor.setPower(1); //DECOMMENT THIS IF YOU WANT TO MOTOR TO WORK
+                vacuumMotor.setPower(1); //DECOMMENT THIS IF YOU WANT TO MOTOR TO WORK
             }
-            else if(gamepad2.x && vStart == true && vPressed == false){
+            else if((gamepad2.left_trigger > 0.5) && vStart == true && vPressed == false){
                 vStart = false;
                 vPause = true;
+                vacuumMotor.setPower(0);
             }
         }
 
-        if(!gamepad2.x){vPause = false;}*/
+        if(!(gamepad2.left_trigger > 0.5)){vPause = false;}
         //Tangent Inverse only goes from -pi/2 to pi/2, so I have to add some test cases to make sure
         //the angle is correct
 
@@ -201,15 +205,14 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             arr = new double[]{7 - angle / 45, -1, -1, 7 - angle / 45};
         }
         //
-        double bottomleftPower = arr[2];
-        double bottomrightPower = arr[3];
-        double topleftPower = arr[0];
-        double toprightPower = arr[1];
 
-        if (gamepad2.y == true) {
+
+        if (gamepad2.y == true && eHeight < ) {
             elevatorMotor.setPower(0.5);
+            eHeight += 1;
         } else if (gamepad2.a == true) {
             elevatorMotor.setPower(-0.5);
+            eHeight -= 1;
         } else {
             elevatorMotor.setPower(0);
         }
@@ -223,21 +226,15 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             servoPosition2 = 0;
         }
 
-        if (gamepad1.left_trigger > .5) {
-            vacuumPower = 1;
-        } else {
-            vacuumPower = 0;
-        }
 
-        // Send calculated power to wheels
-        bottomleftDrive.setPower(bottomleftPower);
-        bottomrightDrive.setPower(bottomrightPower);
-        topleftDrive.setPower(topleftPower);
-        toprightDrive.setPower(toprightPower);
-        flipperServo1.setPosition(servoPosition1);
-        flipperServo2.setPosition(servoPosition2);
-        vacuumMotor.setPower(vacuumPower);
-
+            // Send calculated power to wheels
+            bottomleftDrive.setPower(arr[2]);
+            bottomrightDrive.setPower(arr[3]);
+            topleftDrive.setPower(arr[0]);
+            toprightDrive.setPower(arr[1]);
+            flipperServo1.setPosition(servoPosition1);
+            flipperServo2.setPosition(servoPosition2);
+            vacuumMotor.setPower(vacuumPower);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -251,7 +248,6 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         telemetry.addData("elevator motor power", elevatorMotor.getPower());
 
         telemetry.addData("vacuumPower", vacuumMotor.getPower());
-
 
         /*
          * Code to run ONCE after the driver hits STOP
