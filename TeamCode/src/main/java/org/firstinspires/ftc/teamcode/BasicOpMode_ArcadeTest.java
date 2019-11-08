@@ -224,9 +224,9 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         }
 
         if (gamepad1.left_trigger > .5) {
-            vacuumMotor.setPower(1);
+            vacuumPower = 1;
         } else {
-            vacuumMotor.setPower(0);
+            vacuumPower = 0;
         }
 
         // Send calculated power to wheels
