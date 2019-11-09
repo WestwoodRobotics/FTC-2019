@@ -54,7 +54,7 @@ import java.lang.Math;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "Basic: Arcade Mecanum OpMode", group = "Iterative Opmode")
+@TeleOp(name = "Basic: Arcade Mecanum OpMode")
 public class BasicOpMode_ArcadeTest extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
