@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Right Foundation and Park", group="Exercises")
-public class RFoundationPark extends LinearOpMode {
+@Autonomous(name="Left Foundation and Park", group="Exercises")
+public class LFoundationPark extends LinearOpMode {
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor centerMotor;
@@ -55,7 +55,7 @@ public class RFoundationPark extends LinearOpMode {
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        centerMotor.setDirection(DcMotor.Direction.REVERSE);
+        centerMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // reset encoder count kept by left motor.
 

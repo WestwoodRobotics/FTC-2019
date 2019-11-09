@@ -27,6 +27,8 @@ public class TeleopOpMode  extends OpMode {
 
     private Servo rightIntakeServo = null;
     private Servo leftIntakeServo = null;
+    private Servo backHook;
+
     Double SLOWNESS = 0.2;
     Double SPEED_MULTIPLIER = 1.25;
 
@@ -40,7 +42,8 @@ public class TeleopOpMode  extends OpMode {
     double rightPower;
     double centerPower;
 
-    double intakeServoPower;
+    //
+    //double intakeServoPower;
 
    //double intakeFunctionTime = 3;
 
@@ -50,7 +53,8 @@ public class TeleopOpMode  extends OpMode {
     double leftElevatorPower;
     double rightElevatorPower;
 
-    double centerOfElevatorsPower;
+    //double centerOfElevatorsPower;
+    double backHookPosition=0;
     /*
      * Code to run ONCE when t+he driver hits INIT
      */
@@ -74,6 +78,7 @@ public class TeleopOpMode  extends OpMode {
 
         leftIntakeServo = hardwareMap.get(Servo.class, "leftIntakeServo");
         rightIntakeServo = hardwareMap.get(Servo.class, "rightIntakeServo");
+        backHook = hardwareMap.get(Servo.class, "backHook");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -85,8 +90,9 @@ public class TeleopOpMode  extends OpMode {
         //rightIntake.setDirection(DcMotor.Direction.REVERSE);
 
         leftElevator.setDirection(DcMotor.Direction.FORWARD);
-        rightElevator.setDirection(DcMotor.Direction.FORWARD);
-        centerOfElevators.setDirection(DcMotor.Direction.FORWARD);
+        rightElevator.setDirection(DcMotor.Direction.REVERSE);
+
+        backHook.setDirection(Servo.Direction.FORWARD);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -142,9 +148,8 @@ public class TeleopOpMode  extends OpMode {
 
 
         if(gamepad2.y){
-            intakeServoPower = 1;
             rightIntakeServo.setPosition(0);
-            leftIntakeServo.setPosition(180);
+            leftIntakeServo.setPosition(170);
         }
 
         else if(gamepad2.a) {
@@ -156,21 +161,30 @@ public class TeleopOpMode  extends OpMode {
 
         if(gamepad2.dpad_up)
         {
-            centerOfElevatorsPower = 1;
-        }
+            rightElevatorPower = 1.0;
+            leftElevatorPower = 1.0;
 
-        if(gamepad2.dpad_down)
+        }
+        else if(gamepad2.dpad_down)
         {
-            centerOfElevatorsPower = -1;
+            rightElevatorPower = -1.0;
+            leftElevatorPower = -1.0;
+
         }
-        if(gamepad2.a) {
-            leftElevatorPower=1;
-            rightElevatorPower = 1;
+        else {
+            rightElevatorPower = 0;
+            leftElevatorPower = 0;
         }
 
-        else if (gamepad2.x) {
-            leftElevatorPower = -1;
-            rightElevatorPower = -1;
+        if (gamepad2.x){
+            if (backHookPosition>=1){
+                backHookPosition-=1;
+            }
+        }
+        else if (gamepad2.b){
+            if (backHookPosition<=179){
+                backHookPosition+=1;
+            }
         }
         /*if (intakeServo.getPosition() <= .5) {
             intakeOpen = "CLOSED";
@@ -204,6 +218,8 @@ public class TeleopOpMode  extends OpMode {
             leftDrive.setPower(0);
             rightDrive.setPower(0);*/
 // Horizontal Mobvement in tank drive
+//
+// /*
         if (gamepad1.left_trigger>0 &&  gamepad1.right_trigger>0){
             centerPower=0;
         }
@@ -223,6 +239,7 @@ public class TeleopOpMode  extends OpMode {
         }else{
             leftPower  = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
+
         }// Tank Drive
 
 
@@ -231,6 +248,8 @@ public class TeleopOpMode  extends OpMode {
         // Show the elapsed game time and wheel power.
         //leftIntake.setPower(leftIntakePower);
         //rightIntake.setPower(rightIntakePower);
+        backHook.setPosition(backHookPosition);
+
         centerDrive.setPower(centerPower);
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
@@ -238,6 +257,8 @@ public class TeleopOpMode  extends OpMode {
         rightElevator.setPower(rightElevatorPower);
 
         telemetry.addData("Slow Mode: ", " " + buttonStateSlow);
+        telemetry.addData("Right Elevator: ", " " + rightElevatorPower);
+        telemetry.addData("Left Elevator: " , " " + leftElevatorPower);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Power", "Horizontal: (%.2f)", centerPower);
         telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);

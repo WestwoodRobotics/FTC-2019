@@ -17,13 +17,13 @@ public class AutonOpMode extends LinearOpMode {
 
     public int inchesToTicks(double inches)
     {
-        double ticksForward = inches*115;
+        double ticksForward = inches*Math.PI;
         int theTicksForward = (int)(Math.ceil(ticksForward));
         return theTicksForward;
     }
     public double ticksToInches(int ticks)
     {
-        double inchesForward = ticks/115.0;
+        double inchesForward = ticks/Math.PI;
         return inchesForward;
     }
 
