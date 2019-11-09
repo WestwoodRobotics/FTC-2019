@@ -178,7 +178,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
         if (leftStickX < 0 && leftStickY < 0) { //3rd Quadrant
             angle = Math.atan((leftStickY) / (leftStickX)) + Math.PI;
-        } else if (leftStickX == 0 && leftStickX < 0) {
+        } else if (leftStickY == 0 && leftStickX < 0) {
             angle = Math.PI;
         } else if (leftStickY > 0 && leftStickX < 0) {
             angle = Math.atan((leftStickY) / (leftStickX)) + Math.PI;
@@ -207,7 +207,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             arr = new double[]{-1, 5 - angle / 45, 5 - angle / 45, -1};
         } else if (angle == 270) {
             arr = new double[]{-1, -1, -1, -1};
-        } else if (angle > 270 && leftStickY > 300) {
+        } else if (angle > 270 && leftStickY > 0) {
             arr = new double[]{7 - angle / 45, -1, -1, 7 - angle / 45};
         }
         //
