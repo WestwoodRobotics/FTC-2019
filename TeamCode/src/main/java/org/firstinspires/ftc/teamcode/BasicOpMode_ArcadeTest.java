@@ -237,8 +237,8 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             flipperServo2.setPosition(0);
         }
         else{
-            flipperServo1.setPosition(0);
-            flipperServo2.setPosition(0);
+            flipperServo1.setPosition(180);
+            flipperServo2.setPosition(180);
         }
 
 
