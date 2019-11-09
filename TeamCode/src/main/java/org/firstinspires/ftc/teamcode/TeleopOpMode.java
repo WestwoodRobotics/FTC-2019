@@ -149,11 +149,11 @@ public class TeleopOpMode  extends OpMode {
 
         if(gamepad2.y){
             rightIntakeServo.setPosition(0);
-            leftIntakeServo.setPosition(170);
+            leftIntakeServo.setPosition(180);
         }
 
         else if(gamepad2.a) {
-            rightIntakeServo.setPosition(180);
+            rightIntakeServo.setPosition(130);
             leftIntakeServo.setPosition(0);
         }
 
