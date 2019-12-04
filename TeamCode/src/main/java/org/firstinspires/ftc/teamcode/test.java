@@ -1,19 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Autonomous(name="test", group="Exercises")
 public class test extends LinearOpMode {
     DcMotor leftMotor;
     DcMotor rightMotor;
+    DcMotor centerMotor;
 
     @Override
-    public void runOpMode() throws InterruptedException
+    public void runOpMode()
     {
-        Turn turner = new Turn();
-        Move mover = new Move();
         leftMotor = hardwareMap.dcMotor.get("leftDrive");
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
+        centerMotor = hardwareMap.dcMotor.get("centerDrive");
+        Move mover = new Move(leftMotor, rightMotor, centerMotor, telemetry);
+
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -21,15 +25,14 @@ public class test extends LinearOpMode {
         waitForStart();
 
         mover.goForward(12);
-        turner.turn("LEFT", 90);
-        mover.goForward(12);
-        turner.turn("RIGHT", 30);
-        mover.goForward(14);
-        turner.turnAround();
+        //mover.turn("LEFT", 90);
+        //mover.goForward(3);
+        //mover.turn("RIGHT", 30);
+        //mover.goForward(3);
+        //mover.turnAround();
 
-        telemetry.addData("Forward Motion", mover.getInches());
-        telemetry.addData("Turn", turner.getDegrees());
-        telemetry.addData("Turn", turner.getDirection());
 
-    }
+     }
+
+
 }
