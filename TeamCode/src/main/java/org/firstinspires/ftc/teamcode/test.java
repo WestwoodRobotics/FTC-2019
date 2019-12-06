@@ -24,10 +24,10 @@ public class test extends LinearOpMode {
 
         waitForStart();
 
-        mover.goForward(12);
-        //mover.turn("LEFT", 90);
+        mover.goForward(3);
+        mover.turn("LEFT", 90);
         //mover.goForward(3);
-        //mover.turn("RIGHT", 30);
+        //mover.turn("RIGHT", 90);
         //mover.goForward(3);
         //mover.turnAround();
 

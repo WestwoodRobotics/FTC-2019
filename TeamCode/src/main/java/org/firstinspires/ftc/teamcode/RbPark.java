@@ -34,11 +34,9 @@ public class RbPark extends LinearOpMode {
     {
         leftMotor = hardwareMap.dcMotor.get("leftDrive");
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
-        centerMotor = hardwareMap.dcMotor.get("centerDrive");
 
-        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        centerMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // reset encoder count kept by left motor.
 
@@ -52,18 +50,21 @@ public class RbPark extends LinearOpMode {
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        centerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        centerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        centerMotor.setPower(1);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        centerMotor.setTargetPosition(desiredTick);
+        rightMotor.setPower(1);
+        leftMotor.setPower(1);
+
+        rightMotor.setTargetPosition(desiredTick);
+        leftMotor.setTargetPosition(desiredTick);
 
 
         // set left motor to run to target encoder position and stop with brakes on.
-        centerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // set right motor to run without regard to an encoder.
 
 
@@ -74,16 +75,20 @@ public class RbPark extends LinearOpMode {
 
 
         // set both motors to 25% power. Movement will start.
-        while (centerMotor.getCurrentPosition() < desiredTick)
+        while (Math.abs(rightMotor.getCurrentPosition()) < desiredTick)
         {
-            telemetry.addData("Position Center: ", centerMotor.getCurrentPosition());
+            telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
 
             telemetry.update();
         }
 
+    /*  while(true){
+            rightMotor.setPower(0);
+            leftMotor.setPower(0);
+        }*/
+
         rightMotor.setPower(0);
-
-
+        leftMotor.setPower(0);
     }
 
 }

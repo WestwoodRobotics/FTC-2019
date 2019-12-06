@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Move{
 
     private double degrees;
+    private int x;
     private String turnDirection;
     private double turnTicks;
     private static final double DIAMETER = 14;
@@ -22,6 +23,7 @@ public class Move{
     private static final double BLOCK_TO_MID = 3;
     private static final double BLOCK_lENGTH = 3;
     private int secondBlock;
+
 
     private Telemetry telemetry;
 
@@ -40,51 +42,57 @@ public class Move{
     }
 
     public void goForward(double inches) {
+        this.inches = inches;
+        //requiredTicks=inchesToTicks(inches);
         requiredTicks=inchesToTicks(inches);
 
-        this.inches = inches;
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftMotor.setTargetPosition(requiredTicks);
-        rightMotor.setTargetPosition(requiredTicks);
 
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        leftMotor.setPower(-1);
         rightMotor.setPower(1);
+        leftMotor.setPower(-1);
 
-        while(leftMotor.isBusy() || rightMotor.isBusy()){
-            telemetry.addData("encoder-right", rightMotor.getCurrentPosition());
-            telemetry.update();
+        rightMotor.setTargetPosition(requiredTicks);
+        leftMotor.setTargetPosition(requiredTicks);
 
-            telemetry.addData("target-position", rightMotor.getTargetPosition());
+
+        // set left motor to run to target encoder position and stop with brakes on.
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // set right motor to run without regard to an encoder.
+
+
+        telemetry.addData("Mode", "running");
+        telemetry.update();
+
+        // set left motor to run to 5000 encoder counts.
+
+
+        // set both motors to 25% power. Movement will start.
+        while (Math.abs(rightMotor.getCurrentPosition()) < requiredTicks)
+        {
+            telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
+
             telemetry.update();
         }
 
-        leftMotor.setPower(0);
+    /*  while(true){
+            rightMotor.setPower(0);
+            leftMotor.setPower(0);
+        }*/
+
         rightMotor.setPower(0);
+        leftMotor.setPower(0);
     }
 
     public void turn(String turnDirection, double degrees) {
+
         this.turnDirection = turnDirection;
         this.degrees = degrees;
-
-        if(turnDirection.equals("LEFT")){
-            leftMotor.setPower(1);
-            rightMotor.setPower(1);
-
-            degrees = degrees % 180;
-        }
-        else if(turnDirection.equals("RIGHT")){
-            leftMotor.setPower(-1);
-            rightMotor.setPower(-1);
-
-            degrees = Math.abs(0 - degrees) % 180;
-        }
-
-        turnTicks= DIAMETER*degrees;
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -92,11 +100,39 @@ public class Move{
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+        if(turnDirection.equals("LEFT")){
+            leftMotor.setPower(1);
+            rightMotor.setPower(1);
+
+        }
+        else if(turnDirection.equals("RIGHT")){
+            leftMotor.setPower(-1);
+            rightMotor.setPower(-1);
+
+           degrees = -degrees;
+        }
+
+        turnTicks= DIAMETER*degrees*3;
+
         leftMotor.setTargetPosition((int) Math.round(turnTicks));
         rightMotor.setTargetPosition((int) Math.round(turnTicks));
 
-        leftMotor.setPower(0);
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("Mode", "running");
+        telemetry.update();
+
+        while (Math.abs(rightMotor.getCurrentPosition()) < requiredTicks)
+        {
+            telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
+
+            telemetry.update();
+        }
+
         rightMotor.setPower(0);
+        leftMotor.setPower(0);
     }
 
     public void turnAround(){
@@ -104,13 +140,10 @@ public class Move{
         rightMotor.setPower(1);
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftMotor.setTargetPosition((int)DIAMETER*180);
-        rightMotor.setTargetPosition((int)DIAMETER*180);
 
         leftMotor.setPower(0);
         rightMotor.setPower(0);

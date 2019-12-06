@@ -22,9 +22,9 @@ public class TeleopOpMode  extends OpMode {
     private DcMotor rightElevator = null;
 
     //intake motors initialized
-    private DcMotor runIntake = null;
-    private DcMotor leftIntakeOpen = null;
-    private DcMotor rightIntakeOpen = null;
+    private DcMotor runIntakeOpen = null;
+    private DcMotor leftIntakeWheel = null;
+    private DcMotor rightIntakeWheel = null;
 
     //speed and button variables
     Double SLOWNESS = 0.2;
@@ -46,8 +46,8 @@ public class TeleopOpMode  extends OpMode {
     double leftElevatorPower;
 
     double runIntakePower;
-    double rightIntakeOpenPower;
-    double leftIntakeOpenPower;
+    double rightIntakeWheelPower;
+    double leftIntakeWheelPower;
 
     /*
      * Code to run ONCE when t+he driver hits INIT
@@ -61,9 +61,9 @@ public class TeleopOpMode  extends OpMode {
         rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
         centerDrive = hardwareMap.get(DcMotor.class, "centerDrive");
 
-        leftIntakeOpen = hardwareMap.get(DcMotor.class, "leftIntake");
-        rightIntakeOpen = hardwareMap.get(DcMotor.class, "rightIntake");
-        runIntake = hardwareMap.get(DcMotor.class, "runIntake");
+        leftIntakeWheel = hardwareMap.get(DcMotor.class, "leftIntake");
+        rightIntakeWheel = hardwareMap.get(DcMotor.class, "rightIntake");
+        runIntakeOpen = hardwareMap.get(DcMotor.class, "runIntake");
 
         leftElevator = hardwareMap.get(DcMotor.class, "leftElevator");
         rightElevator = hardwareMap.get(DcMotor.class, "rightElevator");
@@ -73,8 +73,9 @@ public class TeleopOpMode  extends OpMode {
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         centerDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        leftIntakeOpen.setDirection(DcMotor.Direction.FORWARD);
-        rightIntakeOpen.setDirection(DcMotor.Direction.REVERSE);
+        leftIntakeWheel.setDirection(DcMotor.Direction.FORWARD);
+        rightIntakeWheel.setDirection(DcMotor.Direction.REVERSE);
+
 
         leftElevator.setDirection(DcMotor.Direction.FORWARD);
         rightElevator.setDirection(DcMotor.Direction.REVERSE);
@@ -114,29 +115,46 @@ public class TeleopOpMode  extends OpMode {
             numButtonSlow=true;
         }
 
-
-        if(gamepad2.y){
-            //rightIntakeServo.setPosition(0);
-            //leftIntakeServo.setPosition(180);
+        //open intake
+        if (gamepad2.left_trigger > 0){
+            runIntakePower = -1;
+        }
+        else if (gamepad2.right_trigger > 0 ){
+            runIntakePower = 1;
+        }
+        else if (gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0){
+            runIntakePower = 0;
+        }
+        else{
+            runIntakePower = 0;
         }
 
-        else if(gamepad2.a) {
-            //rightIntakeServo.setPosition(130);
-          //  leftIntakeServo.setPosition(0);
+        //run intake wheels
+        if (gamepad2.right_stick_y == 0){
+            leftIntakeWheelPower = 0;
+            rightIntakeWheelPower = 0;
+        }
+        else if(gamepad2.right_stick_y > 0){
+            leftIntakeWheelPower = .5 + leftIntakeWheelPower/4;
+            rightIntakeWheelPower = .5 + rightIntakeWheelPower/4;
+        }
+        else if(gamepad2.right_stick_y < 0) {
+            leftIntakeWheelPower = -1;
+            rightIntakeWheelPower = -1;
         }
 
 
         //elevator code
-        if(gamepad2.dpad_up)
+        if(gamepad2.left_stick_y > 0)
         {
-            rightElevatorPower = 1.0;
-            leftElevatorPower = 1.0;
+            rightElevatorPower = gamepad2.left_stick_y;
+            leftElevatorPower = gamepad2.left_stick_y;
 
         }
-        else if(gamepad2.dpad_down)
+        else if(gamepad2.left_stick_y < 0)
         {
-            rightElevatorPower = -1.0;
-            leftElevatorPower = -1.0;
+            rightElevatorPower = -gamepad2.left_stick_y;
+            leftElevatorPower = -gamepad2.left_stick_y;
 
         }
 
@@ -174,9 +192,9 @@ public class TeleopOpMode  extends OpMode {
 
 
         //set powers of motors
-        leftIntakeOpen.setPower(leftIntakeOpenPower);
-        rightIntakeOpen.setPower(rightIntakeOpenPower);
-        runIntake.setPower(runIntakePower);
+        leftIntakeWheel.setPower(leftIntakeWheelPower);
+        rightIntakeWheel.setPower(rightIntakeWheelPower);
+        runIntakeOpen.setPower(runIntakePower);
         centerDrive.setPower(centerPower);
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
