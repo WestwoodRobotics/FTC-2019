@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Left Far Park", group = "Exercises")
-public class RbPark extends LinearOpMode {
+@Autonomous(name = "Center Right Far Park", group = "Exercises")
+public class CenterRightPark extends LinearOpMode {
 
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -35,7 +35,7 @@ public class RbPark extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        double desiredInches = 5.0;
+        double desiredInches = 7.0;
 
         leftMotor = hardwareMap.dcMotor.get("leftDrive");
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
