@@ -116,17 +116,14 @@ public class TeleopOpMode  extends OpMode {
         }
 
         //open intake
-        if (gamepad2.left_trigger > 0){
+        if (gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0){
+            runIntakePower = 0;
+        }
+        else if (gamepad2.left_trigger > 0){
             runIntakePower = -1;
         }
         else if (gamepad2.right_trigger > 0 ){
             runIntakePower = 1;
-        }
-        else if (gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0){
-            runIntakePower = 0;
-        }
-        else{
-            runIntakePower = 0;
         }
 
         //run intake wheels
@@ -145,17 +142,21 @@ public class TeleopOpMode  extends OpMode {
 
 
         //elevator code
-        if(gamepad2.left_stick_y > 0)
+        if(gamepad2.dpad_down && gamepad2.dpad_up)
+        {
+            rightElevatorPower = 0;
+            leftElevatorPower = 0;
+        }
+        else if(gamepad2.dpad_up)
         {
             rightElevatorPower = gamepad2.left_stick_y;
             leftElevatorPower = gamepad2.left_stick_y;
 
         }
-        else if(gamepad2.left_stick_y < 0)
+        else if(gamepad2.dpad_down)
         {
-            rightElevatorPower = -gamepad2.left_stick_y;
-            leftElevatorPower = -gamepad2.left_stick_y;
-
+            rightElevatorPower = gamepad2.left_stick_y;
+            leftElevatorPower = gamepad2.left_stick_y;
         }
 
         else {
@@ -194,7 +195,7 @@ public class TeleopOpMode  extends OpMode {
         //set powers of motors
         leftIntakeWheel.setPower(leftIntakeWheelPower);
         rightIntakeWheel.setPower(rightIntakeWheelPower);
-        runIntakeOpen.setPower(runIntakePower);
+        runIntakeOpen.setPower(runIntakePower/6);
         centerDrive.setPower(centerPower);
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);

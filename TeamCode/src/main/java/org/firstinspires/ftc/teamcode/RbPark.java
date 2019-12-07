@@ -35,15 +35,15 @@ public class RbPark extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        double desiredInches = 5.0;
+        double desiredInches = 3.0;
 
         leftMotor = hardwareMap.dcMotor.get("leftDrive");
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
 
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        // reset encoder count kept by left motor.
+        // reset encoder count kept by left motor.it
 
 
         telemetry.addData("Mode", "waiting");
@@ -89,25 +89,19 @@ public class RbPark extends LinearOpMode {
         }
 
         // TURN
-
-
-        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        leftMotor.setPower(0);
         rightMotor.setPower(1);
-        leftMotor.setPower(1);
 
-        rightMotor.setTargetPosition(rotateTicks(135));
-        leftMotor.setTargetPosition(rotateTicks(135));
+        rightMotor.setTargetPosition(rotateTicks(180));
 
 
         // set left motor to run to target encoder position and stop with brakes on.
         rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // set right motor to run without regard to an encoder.
 
 
@@ -118,45 +112,11 @@ public class RbPark extends LinearOpMode {
 
 
         // set both motors to 25% power. Movement will start.
-        while (Math.abs(rightMotor.getCurrentPosition()) < rotateTicks(135)) {
-            telemetry.addData("Fraction of Turn: ", Math.abs(rightMotor.getCurrentPosition() / rotateTicks(90)));
+        while (Math.abs(rightMotor.getCurrentPosition()) < rotateTicks(180)) {
+            telemetry.addData("Fraction of Turn: ", Math.abs(rightMotor.getCurrentPosition() / rotateTicks(180)));
 
             telemetry.update();
         }
-        // GO STRAIGHT
-        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        rightMotor.setPower(1);
-        leftMotor.setPower(-1);
-
-        rightMotor.setTargetPosition(inchesToTicks(desiredInches));
-        leftMotor.setTargetPosition(inchesToTicks(desiredInches));
-
-
-        // set left motor to run to target encoder position and stop with brakes on.
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // set right motor to run without regard to an encoder.
-
-
-        telemetry.addData("Mode", "running");
-        telemetry.update();
-
-        // set left motor to run to 5000 encoder counts.
-
-
-        // set both motors to 25% power. Movement will start.
-        while (Math.abs(rightMotor.getCurrentPosition()) < inchesToTicks(desiredInches)) {
-            telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
-
-            telemetry.update();
-        }
-
         rightMotor.setPower(0);
         leftMotor.setPower(0);
     }
