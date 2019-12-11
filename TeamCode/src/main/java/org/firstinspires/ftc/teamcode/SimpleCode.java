@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Move Forward", group = "Exercises")
-public class MoveForward extends LinearOpMode {
+@Autonomous(name = "Simple Code", group = "Exercises")
+public class SimpleCode extends LinearOpMode {
 
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -33,35 +33,7 @@ public class MoveForward extends LinearOpMode {
         return rotationTicks;
     }
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-<<<<<<< HEAD
-        double desiredInches = 3.0;
-=======
-        double desiredInches = 2.0;
->>>>>>> cb6d474fc3079cecbf36fce727af00feec6e63eb
-
-        leftMotor = hardwareMap.dcMotor.get("leftDrive");
-        rightMotor = hardwareMap.dcMotor.get("rightDrive");
-
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightMotor.setDirection(DcMotor.Direction.FORWARD);
-
-        // reset encoder count kept by left motor.it
-
-
-        telemetry.addData("Mode", "waiting");
-        telemetry.update();
-<<<<<<< HEAD
-
-=======
->>>>>>> cb6d474fc3079cecbf36fce727af00feec6e63eb
-        // wait for start button.
-
-        waitForStart();
-
-
-        // GO STRAIGHT
+    public void moveForward(DcMotor leftMotor, DcMotor rightMotor, double desiredInches){
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -95,8 +67,8 @@ public class MoveForward extends LinearOpMode {
             telemetry.update();
         }
 
-<<<<<<< HEAD
-        // TURN
+    }
+    public void turnOnWheelLeft(DcMotor leftMotor, DcMotor rightMotor, float desiredAngle){
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
@@ -105,7 +77,7 @@ public class MoveForward extends LinearOpMode {
         leftMotor.setPower(0);
         rightMotor.setPower(1);
 
-        rightMotor.setTargetPosition(rotateTicks(180));
+        rightMotor.setTargetPosition(rotateTicks(desiredAngle));
 
 
         // set left motor to run to target encoder position and stop with brakes on.
@@ -120,13 +92,36 @@ public class MoveForward extends LinearOpMode {
 
 
         // set both motors to 25% power. Movement will start.
-        while (Math.abs(rightMotor.getCurrentPosition()) < rotateTicks(180)) {
+        while (Math.abs(rightMotor.getCurrentPosition()) < rotateTicks(desiredAngle)) {
             telemetry.addData("Fraction of Turn: ", Math.abs(rightMotor.getCurrentPosition() / rotateTicks(180)));
 
             telemetry.update();
         }
-=======
->>>>>>> cb6d474fc3079cecbf36fce727af00feec6e63eb
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        leftMotor = hardwareMap.dcMotor.get("leftDrive");
+        rightMotor = hardwareMap.dcMotor.get("rightDrive");
+
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        // reset encoder count kept by left motor.it
+
+
+        telemetry.addData("Mode", "waiting");
+        telemetry.update();
+
+        // wait for start button.
+
+        waitForStart();
+
+
+        moveForward(leftMotor,rightMotor,3);
+        turnOnWheelLeft(leftMotor,rightMotor,180);
+
         rightMotor.setPower(0);
         leftMotor.setPower(0);
     }
