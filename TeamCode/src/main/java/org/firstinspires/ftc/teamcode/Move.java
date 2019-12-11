@@ -43,50 +43,15 @@ public class Move{
 
     public void goForward(double inches) {
         this.inches = inches;
-        //requiredTicks=inchesToTicks(inches);
         requiredTicks=inchesToTicks(inches);
-
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         rightMotor.setPower(1);
         leftMotor.setPower(-1);
-
         rightMotor.setTargetPosition(requiredTicks);
         leftMotor.setTargetPosition(requiredTicks);
-
-
-        // set left motor to run to target encoder position and stop with brakes on.
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // set right motor to run without regard to an encoder.
-
-
-        telemetry.addData("Mode", "running");
-        telemetry.update();
-
-        // set left motor to run to 5000 encoder counts.
-
-
-        // set both motors to 25% power. Movement will start.
-        while (Math.abs(rightMotor.getCurrentPosition()) < requiredTicks)
-        {
-            telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
-
-            telemetry.update();
-        }
-
-    /*  while(true){
-            rightMotor.setPower(0);
-            leftMotor.setPower(0);
-        }*/
-
-        rightMotor.setPower(0);
-        leftMotor.setPower(0);
     }
 
     public void turn(String turnDirection, double degrees) {

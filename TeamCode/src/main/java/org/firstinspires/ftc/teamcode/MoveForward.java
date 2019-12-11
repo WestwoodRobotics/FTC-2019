@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Left Far Park", group = "Exercises")
-public class RbPark extends LinearOpMode {
+@Autonomous(name = "Move Forward", group = "Exercises")
+public class MoveForward extends LinearOpMode {
 
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -41,8 +41,7 @@ public class RbPark extends LinearOpMode {
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
 
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightMotor.se
-    tDirection(DcMotor.Direction.FORWARD);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // reset encoder count kept by left motor.it
 
@@ -87,7 +86,7 @@ public class RbPark extends LinearOpMode {
             telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
 
             telemetry.update();
-` `        }
+        }
 
         // TURN
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -123,4 +122,3 @@ public class RbPark extends LinearOpMode {
     }
 
 }
-
