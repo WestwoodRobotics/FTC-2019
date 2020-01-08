@@ -13,91 +13,7 @@ public class SimpleCode extends LinearOpMode {
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor centerMotor;
-    private int ticksInWheel = 580;
-    private double radius = 7.5;
 
-
-    public int inchesToTicks(double inches) {
-        double ticksForward = inches * ticksInWheel / (4 * Math.PI);
-        int theTicksForward = (int) (Math.ceil(ticksForward));
-        return theTicksForward;
-    }
-
-    public double ticksToInches(int ticks) {
-        double inchesForward = 4 * ticks * Math.PI / ticksInWheel;
-        return inchesForward;
-    }
-
-    public int rotateTicks(float degrees) {
-        int rotationTicks = inchesToTicks(degrees * radius * Math.PI / 180);
-        return rotationTicks;
-    }
-
-    public void moveForward(DcMotor leftMotor, DcMotor rightMotor, double desiredInches){
-        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        rightMotor.setPower(1);
-        leftMotor.setPower(-1);
-
-        rightMotor.setTargetPosition(inchesToTicks(desiredInches));
-        leftMotor.setTargetPosition(inchesToTicks(desiredInches));
-
-
-        // set left motor to run to target encoder position and stop with brakes on.
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // set right motor to run without regard to an encoder.
-
-
-        telemetry.addData("Mode", "running");
-        telemetry.update();
-
-        // set left motor to run to 5000 encoder counts.
-
-
-        // set both motors to 25% power. Movement will start.
-        while (Math.abs(rightMotor.getCurrentPosition()) < inchesToTicks(desiredInches)) {
-            telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
-
-            telemetry.update();
-        }
-
-    }
-    public void turnOnWheelLeft(DcMotor leftMotor, DcMotor rightMotor, float desiredAngle){
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        leftMotor.setPower(0);
-        rightMotor.setPower(1);
-
-        rightMotor.setTargetPosition(rotateTicks(desiredAngle));
-
-
-        // set left motor to run to target encoder position and stop with brakes on.
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // set right motor to run without regard to an encoder.
-
-
-        telemetry.addData("Mode", "running");
-        telemetry.update();
-
-        // set left motor to run to 5000 encoder counts.
-
-
-        // set both motors to 25% power. Movement will start.
-        while (Math.abs(rightMotor.getCurrentPosition()) < rotateTicks(desiredAngle)) {
-            telemetry.addData("Fraction of Turn: ", Math.abs(rightMotor.getCurrentPosition() / rotateTicks(180)));
-
-            telemetry.update();
-        }
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -118,10 +34,32 @@ public class SimpleCode extends LinearOpMode {
 
         waitForStart();
 
+        /*
+         * WRITE THE CODE HERE
+         * Please note that negative parameter values will not work as intended
+         * Instead, for this ability, use reversed and separate function instead
+         * Angle should always be in degrees (for parameters at least)
+         * Distance should always be in inches (for parameters at least)
+         * */
 
-        moveForward(leftMotor,rightMotor,3);
-        turnOnWheelLeft(leftMotor,rightMotor,180);
+        /*
 
+         * MANUAL
+         * moveForward(x) moves the robot forward x inches
+         * turnOnWheelLeft(x) turns the robot on the point of rotation being the left wheel by x degrees
+         * turnOnWheelRight(x) turns the robot on the point of rotation being the right wheel by x degrees
+         *
+         */
+
+        AutonCommand.moveForward(leftMotor, rightMotor, 12, telemetry);
+
+        AutonCommand.stopMotors(leftMotor, rightMotor, telemetry);
+
+        AutonCommand.turnOnWheelRight(leftMotor, rightMotor, 90, telemetry);
+
+
+
+        //Always keep these lines for safety
         rightMotor.setPower(0);
         leftMotor.setPower(0);
     }

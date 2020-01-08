@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Basic: Iterative OpMode", group="Iterative OpMode")
@@ -17,6 +18,11 @@ public class TeleopOpMode  extends OpMode {
     private DcMotor rightDrive = null;
     private DcMotor centerDrive = null;
 
+    //back Servos
+    private Servo leftBack;
+    private Servo rightBack;
+
+
     //elevator motors initialized
     private DcMotor leftElevator = null;
     private DcMotor rightElevator = null;
@@ -26,12 +32,17 @@ public class TeleopOpMode  extends OpMode {
     private DcMotor leftIntakeWheel = null;
     private DcMotor rightIntakeWheel = null;
 
+
+
     //speed and button variables
-    Double SLOWNESS = 0.2;
+    Double SLOWNESS = 0.4;
     Double SPEED_MULTIPLIER = 1.25;
+    Double IntakeSlow = 0.5;
 
     boolean buttonStateSlow=true;
     boolean numButtonSlow=true;
+    boolean leftTriggerPress = false;
+    boolean rightTriggerPress = false;
 
     //telemetry variables
     String intakeMotorsOn = "";
@@ -45,6 +56,8 @@ public class TeleopOpMode  extends OpMode {
     double rightElevatorPower;
     double leftElevatorPower;
 
+    boolean IntakeToggle;
+
     double runIntakePower;
     double rightIntakeWheelPower;
     double leftIntakeWheelPower;
@@ -54,7 +67,7 @@ public class TeleopOpMode  extends OpMode {
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initializxed");
 
         //initialize motors for phone
         leftDrive  = hardwareMap.get(DcMotor.class, "leftDrive");
@@ -68,6 +81,9 @@ public class TeleopOpMode  extends OpMode {
         leftElevator = hardwareMap.get(DcMotor.class, "leftElevator");
         rightElevator = hardwareMap.get(DcMotor.class, "rightElevator");
 
+        leftBack = hardwareMap.servo.get("leftBack");
+        rightBack = hardwareMap.servo.get("rightBack");
+
         //sets direction of motors
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -77,8 +93,8 @@ public class TeleopOpMode  extends OpMode {
         rightIntakeWheel.setDirection(DcMotor.Direction.REVERSE);
 
 
-        leftElevator.setDirection(DcMotor.Direction.FORWARD);
-        rightElevator.setDirection(DcMotor.Direction.REVERSE);
+        leftElevator.setDirection(DcMotor.Direction.REVERSE);
+        rightElevator.setDirection(DcMotor.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -114,16 +130,45 @@ public class TeleopOpMode  extends OpMode {
         else {
             numButtonSlow=true;
         }
+        //Back Hook
+        if(gamepad2.y){
+            leftBack.setPosition(90);
+            rightBack.setPosition(180);
+        }
+        else if(gamepad2.a){
+            leftBack.setPosition(0);
+            rightBack.setPosition(90);
+        }
 
         //open intake
-        if (gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0){
-            runIntakePower = 0;
+        if (gamepad2.left_trigger != 0 && gamepad2.right_trigger == 0){
+            leftTriggerPress = true;
+            rightTriggerPress = false;
         }
-        else if (gamepad2.left_trigger > 0){
-            runIntakePower = -1;
+        else if (gamepad2.right_trigger != 0 && gamepad2.left_trigger == 0 ){
+            rightTriggerPress = true;
+            leftTriggerPress = false;
         }
-        else if (gamepad2.right_trigger > 0 ){
+        else if (gamepad2.right_trigger != 0 && gamepad2.left_trigger != 0){
+            leftTriggerPress = false;
+            rightTriggerPress = false;
+        }
+
+        /////////////
+        if (rightTriggerPress && !leftTriggerPress) {
             runIntakePower = 1;
+
+        }
+        else if (leftTriggerPress && !rightTriggerPress){
+            runIntakePower = -1;
+
+        }
+        else if (!rightTriggerPress && !leftTriggerPress){
+            runIntakePower = 0  ;
+
+        }
+        else{
+            runIntakePower = 0;
         }
 
         //run intake wheels
@@ -132,8 +177,8 @@ public class TeleopOpMode  extends OpMode {
             rightIntakeWheelPower = 0;
         }
         else if(gamepad2.right_stick_y > 0){
-            leftIntakeWheelPower = .5 + leftIntakeWheelPower/4;
-            rightIntakeWheelPower = .5 + rightIntakeWheelPower/4;
+            leftIntakeWheelPower = gamepad2.right_stick_y;
+            rightIntakeWheelPower = gamepad2.right_stick_y;
         }
         else if(gamepad2.right_stick_y < 0) {
             leftIntakeWheelPower = -1;
@@ -142,23 +187,18 @@ public class TeleopOpMode  extends OpMode {
 
 
         //elevator code
-        if(gamepad2.dpad_down && gamepad2.dpad_up)
-        {
+        if(gamepad2.dpad_down && gamepad2.dpad_up){
             rightElevatorPower = 0;
             leftElevatorPower = 0;
         }
-        else if(gamepad2.dpad_up)
-        {
-            rightElevatorPower = gamepad2.left_stick_y;
-            leftElevatorPower = gamepad2.left_stick_y;
-
+        else if (gamepad2.dpad_up){
+            rightElevatorPower = 1;
+            leftElevatorPower = 1;
         }
-        else if(gamepad2.dpad_down)
-        {
-            rightElevatorPower = gamepad2.left_stick_y;
-            leftElevatorPower = gamepad2.left_stick_y;
+        else if (gamepad2.dpad_down){
+            rightElevatorPower = -1;
+            leftElevatorPower = -1;
         }
-
         else {
             rightElevatorPower = 0;
             leftElevatorPower = 0;
@@ -177,25 +217,32 @@ public class TeleopOpMode  extends OpMode {
         }else{
             centerPower=0;
         }
+        // Mode for Intake
+
+
 
         //applies slowness variable
         if (buttonStateSlow){
             centerPower=centerPower*SLOWNESS*2;
             leftPower  = gamepad1.left_stick_y * SLOWNESS;
             rightPower = gamepad1.right_stick_y * SLOWNESS ;
+
         }else{
             leftPower  = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
+
 
         }// Tank Drive
 
 
 
 
+
         //set powers of motors
-        leftIntakeWheel.setPower(leftIntakeWheelPower);
-        rightIntakeWheel.setPower(rightIntakeWheelPower);
-        runIntakeOpen.setPower(runIntakePower/6);
+
+        leftIntakeWheel.setPower(rightIntakeWheelPower);
+        rightIntakeWheel.setPower(leftIntakeWheelPower);
+        runIntakeOpen.setPower(runIntakePower*IntakeSlow);
         centerDrive.setPower(centerPower);
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
