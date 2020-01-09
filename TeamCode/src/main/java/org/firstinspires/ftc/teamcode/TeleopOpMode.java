@@ -132,12 +132,12 @@ public class TeleopOpMode  extends OpMode {
         }
         //Back Hook
         if(gamepad2.y){
-            leftBack.setPosition(270);
+            leftBack.setPosition(180);
             rightBack.setPosition(0);
         }
         else if(gamepad2.a){
             leftBack.setPosition(0);
-            rightBack.setPosition(270);
+            rightBack.setPosition(180);
         }
 
         //open intake
@@ -252,7 +252,8 @@ public class TeleopOpMode  extends OpMode {
         telemetry.addData("Slow Mode: ", " " + buttonStateSlow);
         telemetry.addData("Right Elevator: ", " " + rightElevatorPower);
         telemetry.addData("Left Elevator: " , " " + leftElevatorPower);
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData(
+                "Status", "Run Time: " + runtime.toString());
         telemetry.addData("Power", "Horizontal: (%.2f)", centerPower);
         telemetry.addData("Drive Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
 
