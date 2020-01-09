@@ -132,12 +132,12 @@ public class TeleopOpMode  extends OpMode {
         }
         //Back Hook
         if(gamepad2.y){
-            leftBack.setPosition(90);
-            rightBack.setPosition(180);
+            leftBack.setPosition(270);
+            rightBack.setPosition(0);
         }
         else if(gamepad2.a){
             leftBack.setPosition(0);
-            rightBack.setPosition(90);
+            rightBack.setPosition(270);
         }
 
         //open intake
