@@ -89,8 +89,8 @@ public class TeleopOpMode  extends OpMode {
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         centerDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        leftIntakeWheel.setDirection(DcMotor.Direction.FORWARD);
-        rightIntakeWheel.setDirection(DcMotor.Direction.REVERSE);
+        leftIntakeWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightIntakeWheel.setDirection(DcMotor.Direction.FORWARD);
 
 
         leftElevator.setDirection(DcMotor.Direction.REVERSE);
@@ -176,11 +176,11 @@ public class TeleopOpMode  extends OpMode {
             leftIntakeWheelPower = 0;
             rightIntakeWheelPower = 0;
         }
-        else if(gamepad2.right_stick_y < 0){
+        else if(gamepad2.right_stick_y > 0){
             leftIntakeWheelPower = gamepad2.right_stick_y;
             rightIntakeWheelPower = gamepad2.right_stick_y;
         }
-        else if(gamepad2.right_stick_y > 0) {
+        else if(gamepad2.right_stick_y < 0) {
             leftIntakeWheelPower = -1;
             rightIntakeWheelPower = -1;
         }
