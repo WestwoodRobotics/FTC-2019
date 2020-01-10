@@ -37,7 +37,7 @@ public class TeleopOpMode  extends OpMode {
     //speed and button variables
     Double SLOWNESS = 0.4;
     Double SPEED_MULTIPLIER = 1.25;
-    Double IntakeSlow = 0.5;
+    Double IntakeSlow = .6;
 
     boolean buttonStateSlow=true;
     boolean numButtonSlow=true;
@@ -176,11 +176,11 @@ public class TeleopOpMode  extends OpMode {
             leftIntakeWheelPower = 0;
             rightIntakeWheelPower = 0;
         }
-        else if(gamepad2.right_stick_y > 0){
+        else if(gamepad2.right_stick_y < 0){
             leftIntakeWheelPower = gamepad2.right_stick_y;
             rightIntakeWheelPower = gamepad2.right_stick_y;
         }
-        else if(gamepad2.right_stick_y < 0) {
+        else if(gamepad2.right_stick_y > 0) {
             leftIntakeWheelPower = -1;
             rightIntakeWheelPower = -1;
         }
