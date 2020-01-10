@@ -153,6 +153,11 @@ public class TeleopOpMode  extends OpMode {
             leftTriggerPress = false;
             rightTriggerPress = false;
         }
+        else {
+            leftTriggerPress =false;
+            rightTriggerPress =false;
+        }
+
 
         /////////////
         if (rightTriggerPress && !leftTriggerPress) {
