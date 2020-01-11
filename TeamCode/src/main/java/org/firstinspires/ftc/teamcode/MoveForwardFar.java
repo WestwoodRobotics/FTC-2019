@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "Move Forward", group = "Exercises")
-public class MoveForward extends LinearOpMode {
+public class MoveForwardFar extends LinearOpMode {
 
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -52,7 +52,7 @@ public class MoveForward extends LinearOpMode {
 
         waitForStart();
 
-        AutonCommand.moveForward(leftMotor,rightMotor,6, telemetry);
+        AutonCommand.moveForward(leftMotor,rightMotor,18, telemetry);
 
         rightMotor.setPower(0);
         leftMotor.setPower(0);

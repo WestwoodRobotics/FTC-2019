@@ -182,12 +182,12 @@ public class TeleopOpMode  extends OpMode {
             rightIntakeWheelPower = 0;
         }
         else if(gamepad2.right_stick_y > 0){
-            leftIntakeWheelPower = gamepad2.right_stick_y;
-            rightIntakeWheelPower = gamepad2.right_stick_y;
+            leftIntakeWheelPower = gamepad2.right_stick_y*.75;
+            rightIntakeWheelPower = gamepad2.right_stick_y *.75;
         }
         else if(gamepad2.right_stick_y < 0) {
-            leftIntakeWheelPower = -1;
-            rightIntakeWheelPower = -1;
+            leftIntakeWheelPower = gamepad2.right_stick_y;
+            rightIntakeWheelPower = gamepad2.right_stick_y;
         }
 
 
