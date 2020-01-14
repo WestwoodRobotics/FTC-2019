@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,8 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @Autonomous(name = "Move Forward", group = "Exercises")
 public class MoveForward extends LinearOpMode {
-    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
-    DcMotor leftMotor;
+    BNO055IMU               imu;    DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor centerMotor;
     static final double     P_DRIVE_COEFF           = 0.15;
@@ -105,7 +104,7 @@ public class MoveForward extends LinearOpMode {
     public double getError(double targetAngle) {
 
         double robotError;
-        robotError = targetAngle - gyro.getIntegratedZValue();
+        robotError = targetAngle - 0;//imu.getIntegratedZValue();
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
