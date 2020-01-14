@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Move Forward", group = "Exercises")
+@Autonomous(name = "Move Forward Far", group = "Exercises")
 public class MoveForwardFar extends LinearOpMode {
 
     DcMotor leftMotor;
@@ -35,7 +35,7 @@ public class MoveForwardFar extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        double desiredInches = 2.0;
+        double desiredInches = 25.0;
 
         leftMotor = hardwareMap.dcMotor.get("leftDrive");
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
@@ -52,7 +52,39 @@ public class MoveForwardFar extends LinearOpMode {
 
         waitForStart();
 
-        AutonCommand.moveForward(leftMotor,rightMotor,18, telemetry);
+        // GO STRAIGHT
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        rightMotor.setPower(0.8);
+        leftMotor.setPower(-1);
+
+        rightMotor.setTargetPosition(inchesToTicks(desiredInches));
+        leftMotor.setTargetPosition(inchesToTicks(desiredInches));
+
+
+        // set left motor to run to target encoder position and stop with brakes on.
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // set right motor to run without regard to an encoder.
+
+
+        telemetry.addData("Mode", "running");
+        telemetry.update();
+
+        // set left motor to run to 5000 encoder counts.
+
+
+        // set both motors to 25% power. Movement will start.
+        while (Math.abs(rightMotor.getCurrentPosition()) < inchesToTicks(desiredInches)) {
+            telemetry.addData("Position Center: ", Math.abs(rightMotor.getCurrentPosition()));
+
+            telemetry.update();
+        }
 
         rightMotor.setPower(0);
         leftMotor.setPower(0);

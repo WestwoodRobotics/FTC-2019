@@ -37,7 +37,7 @@ public class TeleopOpMode  extends OpMode {
     //speed and button variables
     Double SLOWNESS = 0.4;
     Double SPEED_MULTIPLIER = 1.25;
-    Double IntakeSlow = .6;
+    Double IntakeSlow = 1.0;
 
     boolean buttonStateSlow=true;
     boolean numButtonSlow=true;
@@ -131,11 +131,11 @@ public class TeleopOpMode  extends OpMode {
             numButtonSlow=true;
         }
         //Back Hook
-        if(gamepad2.y){
+        if(gamepad1.y){
             leftBack.setPosition(180);
             rightBack.setPosition(0);
         }
-        else if(gamepad2.a){
+        else if(gamepad1.a){
             leftBack.setPosition(0);
             rightBack.setPosition(180);
         }
@@ -172,6 +172,9 @@ public class TeleopOpMode  extends OpMode {
             runIntakePower = 0  ;
 
         }
+        else if(rightTriggerPress && !leftTriggerPress && gamepad2.dpad_down){
+            runIntakePower =-1;
+        }
         else{
             runIntakePower = 0;
         }
@@ -195,6 +198,7 @@ public class TeleopOpMode  extends OpMode {
         if(gamepad2.dpad_down && gamepad2.dpad_up){
             rightElevatorPower = 0;
             leftElevatorPower = 0;
+
         }
         else if (gamepad2.dpad_up){
             rightElevatorPower = 1;
@@ -203,6 +207,7 @@ public class TeleopOpMode  extends OpMode {
         else if (gamepad2.dpad_down){
             rightElevatorPower = -1;
             leftElevatorPower = -1;
+            runIntakePower = -1;
         }
         else {
             rightElevatorPower = 0;
@@ -250,7 +255,7 @@ public class TeleopOpMode  extends OpMode {
         runIntakeOpen.setPower(runIntakePower*IntakeSlow);
         centerDrive.setPower(centerPower);
         leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
+        rightDrive.setPower(rightPower*.85);
         leftElevator.setPower(leftElevatorPower);
         rightElevator.setPower(rightElevatorPower);
 
