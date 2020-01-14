@@ -25,12 +25,7 @@ public class MoveForward extends LinearOpMode {
 
 
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        gyroDrive(.5,10,0);
 
-
-    }
     public void gyroDrive( double speed, double distance, double angle) {
 
         int     newLeftTarget;
@@ -117,6 +112,29 @@ public class MoveForward extends LinearOpMode {
     }
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
+    }
+
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        leftMotor = hardwareMap.dcMotor.get("leftDrive");
+        rightMotor = hardwareMap.dcMotor.get("rightDrive");
+
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        // reset encoder count kept by left motor.it
+
+
+        telemetry.addData("Mode", "waiting");
+        telemetry.update();
+        // wait for start button.
+
+        waitForStart();
+        gyroDrive(5,1000000,0);
+        stop();
+
+
     }
 
 }
