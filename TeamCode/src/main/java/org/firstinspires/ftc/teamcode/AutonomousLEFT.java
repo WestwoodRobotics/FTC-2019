@@ -39,8 +39,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 
-@Autonomous(name="Auto Drive By Time")
-public class AutoDriveByTime_Linear extends LinearOpMode {
+//RISHI
+
+@Autonomous(name="Autonomous - START ON LEFT")
+public class AutonomousLEFT extends LinearOpMode {
+
 
     /* Declare OpMode members. */
 
@@ -51,15 +54,19 @@ public class AutoDriveByTime_Linear extends LinearOpMode {
     private DcMotor topleftDrive = null;
     private DcMotor toprightDrive = null;
 
-    private DcMotor elevatorMotor = null;
+    //private DcMotor elevatorMotor = null;
 
-    private Servo flipperServo1 = null;
-    private Servo flipperServo2 = null;
+    //private Servo flipperServo1 = null;
+    //private Servo flipperServo2 = null;
 
-    private DcMotor vacuumMotor = null;
+    //private DcMotor vacuumMotor = null;
 
     static final double FORWARD_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    private Servo IOMotor1;
+    private Servo IOMotor2;
+    private Servo hookServo1;
+    private Servo hookServo2;
 
     @Override
     public void runOpMode() {
@@ -68,12 +75,16 @@ public class AutoDriveByTime_Linear extends LinearOpMode {
         topleftDrive = hardwareMap.get(DcMotor.class, "top_left_drive");
         toprightDrive = hardwareMap.get(DcMotor.class, "top_right_drive");
 
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
+        //elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
 
-        flipperServo1 = hardwareMap.get(Servo.class, "flipper_servo1");
-        flipperServo2 = hardwareMap.get(Servo.class, "flipper_servo2");
+        //flipperServo1 = hardwareMap.get(Servo.class, "flipper_servo1");
+        //flipperServo2 = hardwareMap.get(Servo.class, "flipper_servo2");
 
-        vacuumMotor = hardwareMap.get(DcMotor.class, "vacuum_motor");
+        //IOMotor1 = hardwareMap.get(Servo.class, "claw_servo1");
+        //IOMotor2 = hardwareMap.get(Servo.class, "claw_servo2");
+
+        hookServo1 = hardwareMap.get(Servo.class, "hook_servo1");
+        hookServo2 = hardwareMap.get(Servo.class, "hook_servo2");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -81,12 +92,12 @@ public class AutoDriveByTime_Linear extends LinearOpMode {
         topleftDrive.setDirection(DcMotor.Direction.FORWARD);
         toprightDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
+        /*elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
 
         flipperServo1.setDirection(Servo.Direction.FORWARD);
         flipperServo2.setDirection(Servo.Direction.REVERSE);
 
-        vacuumMotor.setDirection(DcMotor.Direction.FORWARD);
+        vacuumMotor.setDirection(DcMotor.Direction.FORWARD);*/
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
@@ -97,29 +108,31 @@ public class AutoDriveByTime_Linear extends LinearOpMode {
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        // Step 1:  Drive forward for 3 seconds
-        bottomleftDrive.setPower(FORWARD_SPEED);
-        bottomrightDrive.setPower(FORWARD_SPEED);
-        topleftDrive.setPower(FORWARD_SPEED);
-        toprightDrive.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
 
-        // Step 2:  Spin right for 1.3 seconds
-        bottomleftDrive.setPower(-TURN_SPEED);
-        bottomrightDrive.setPower(TURN_SPEED);
-        topleftDrive.setPower(-TURN_SPEED);
-        toprightDrive.setPower(TURN_SPEED);
+        // Step 2:  Strafe right for 0.5 seconds
+        bottomleftDrive.setPower(-1);
+        bottomrightDrive.setPower(1);
+        topleftDrive.setPower(1);
+        toprightDrive.setPower(-1);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < .5)) {
+        while (opModeIsActive() && (runtime.seconds() < 0.25)) {
             telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
-        bottomleftDrive.setPower(FORWARD_SPEED);
+        //
+
+        // Step 1:  Drive forward for 0.5 second
+        bottomleftDrive.setPower(1);
+        bottomrightDrive.setPower(1);
+        topleftDrive.setPower(1);
+        toprightDrive.setPower(1);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        /*bottomleftDrive.setPower(FORWARD_SPEED);
         bottomrightDrive.setPower(FORWARD_SPEED);
         topleftDrive.setPower(FORWARD_SPEED);
         toprightDrive.setPower(FORWARD_SPEED);
@@ -137,6 +150,6 @@ public class AutoDriveByTime_Linear extends LinearOpMode {
             telemetry.addData("Path", "Complete");
             telemetry.update();
             sleep(1000);
-        }
+        }*/
     }
 }

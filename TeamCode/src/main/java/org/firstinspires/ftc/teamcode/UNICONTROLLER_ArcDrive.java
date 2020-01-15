@@ -33,10 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.lang.Math;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -52,8 +49,8 @@ import java.lang.Math;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "Basic: Arcade Mecanum OpMode")
-public class BasicOpMode_ArcadeTest extends OpMode {
+@TeleOp(name = "Basic: ONE-C Arcade Mecanum Opmode")
+public class UNICONTROLLER_ArcDrive extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -64,7 +61,12 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
     private DcMotor elevatorMotor = null;
 
-    private Servo clawServo1 = null, clawServo2 = null;
+    //private Servo flipperServo1 = null;
+    //private Servo flipperServo2 = null;
+
+    //private DcMotor vacuumMotor = null;
+
+    private Servo IOMotor1 = null, IOMotor2 = null;
     private Servo hookServo1 = null, hookServo2 = null;
 
     int vacuumPower = 0;
@@ -73,9 +75,12 @@ public class BasicOpMode_ArcadeTest extends OpMode {
     boolean vPressed = false;
     boolean vPause = false;
 
-    boolean slowStart = false, slowPressed = false;
-    boolean cStart = false, cPressed = false;
-    boolean hStart = false, hPressed = false;
+    boolean slowStart = false;
+    boolean slowPressed = false;
+    boolean slowPause = false;
+
+    boolean cStart = false, cPressed = false, cPause = false;
+    boolean hStart = false, hPressed = false, hPause = false;
 
     boolean INPUTstarted = false;
 
@@ -100,20 +105,31 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
         elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
 
-        clawServo1 = hardwareMap.get(Servo.class, "claw_servo1");
-        clawServo2 = hardwareMap.get(Servo.class, "claw_servo2");
+        //flipperServo1 = hardwareMap.get(Servo.class, "flipper_servo1");
+        //flipperServo2 = hardwareMap.get(Servo.class, "flipper_servo2");
 
-        clawServo1.setDirection(Servo.Direction.REVERSE);
+        IOMotor1 = hardwareMap.get(Servo.class, "claw_servo1");
+        IOMotor2 = hardwareMap.get(Servo.class, "claw_servo2");
 
         hookServo1 = hardwareMap.get(Servo.class, "hook_servo1");
         hookServo2 = hardwareMap.get(Servo.class, "hook_servo2");
 
+
+        //vacuumMotor = hardwareMap.get(DcMotor.class, "vacuum_motor");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
         bottomrightDrive.setDirection(DcMotor.Direction.REVERSE);
         topleftDrive.setDirection(DcMotor.Direction.FORWARD);
         toprightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        /*elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        flipperServo1.setDirection(Servo.Direction.FORWARD);
+        flipperServo2.setDirection(Servo.Direction.REVERSE);
+
+        vacuumMotor.setDirection(DcMotor.Direction.FORWARD);*/
+
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -141,10 +157,52 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
         // Setup a variable for each drive wheel to save power level for telemetry
         //double bottomleftpower, bottomrightpower, topleftpower, toprightpower;
-        double leftStickY = -1 * gamepad1.left_stick_y;
-        double leftStickX = gamepad1.left_stick_x;
+        double leftStickY = -1 * gamepad2.left_stick_y;
+        double leftStickX = gamepad2.left_stick_x;
 
         double angle = Math.atan((leftStickY) / (leftStickX));
+
+
+
+        /*if (vPause == false) {
+            if ((gamepad2.left_trigger > 0.5) && vStart == false && vPressed == false) {
+                vStart = true;
+                vPressed = true;
+                vacuumMotor.setPower(0);
+            } else if (!(gamepad2.left_trigger > 0.5) && vStart == true) {
+                vPressed = false;
+                vacuumMotor.setPower(1);
+            } else if ((gamepad2left_trigger > 0.5) && vStart == true && vPressed == false) {
+                vStart = false;
+                vPause = true;
+                vacuumMotor.setPower(0);
+            }
+        } else {
+            if (!(gamepad2.left_trigger > 0.5)) {
+                vPause = false;
+            }
+        }*/
+
+        //wheel intake/outtake toggle thingy thing
+
+        /*if (IOpause == false) {
+            if ((gamepad1.x) && IOstart == false && IOpressed == false) {
+                IOstart = true;
+                IOpressed = true;
+                //vacuumMotor.setPower(0);
+            } else if (!(gamepad1.x) && IOstart == true) {
+                IOpressed = false;
+                IOMotor1.setPower(1);
+                IOMotor2.setPower(1);
+            } else if ((gamepad1.x) && IOstart == true && IOpressed == false) {
+                IOstart = false;
+                IOpause = true;
+            }
+        } else {
+            if (!(gamepad2.left_trigger > 0.5)) {
+                vPause = false;
+            }
+        }*/
 
         // SLOW MODE
 
@@ -201,55 +259,95 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             elevatorMotor.setPower(0);
         }
 
-        if (gamepad1.x && !cPressed) {
-            cStart = !cStart;
-        }
-        if (cStart) {
-            clawServo1.setPosition(0.5);
-            clawServo2.setPosition(0.5);
-        }
-        else{ // The issue is this if block right here
-            clawServo1.setPosition(0);
-            clawServo2.setPosition(0);
-        }
-        cPressed = gamepad1.x;
+        /*
+        if (gamepad2.x) {
+            flipperServo1.setPosition(180);
+            flipperServo2.setPosition(180);
+        } else if (gamepad2.b) {
+            flipperServo1.setPosition(0);
+            flipperServo2.setPosition(0);
+        }*/
 
-        if (gamepad2.b && !hPressed) {
-            hStart = !hStart;
+        if (cPause == false) {
+            if (gamepad2.x && cStart == false && cPressed == false) {
+                cStart = true;
+                cPressed = true;
+            } else if (!gamepad2.x && cStart == true) {
+                cPressed = false;
+                IOMotor1.setPosition(0.5);
+                IOMotor2.setPosition(0.5);
+            } else if (gamepad2.x && cStart == true && cPressed == false) {
+                cStart = false;
+                cPause = true;
+                IOMotor1.setPosition(0.75);
+                IOMotor2.setPosition(0.25);
+            }
+        } else {
+            if (!gamepad2.x) {
+                cPause = false;
+            }
         }
-        if (hStart) {
-            hookServo1.setPosition(0.5);
-            hookServo2.setPosition(0.5);
-        }
-        else{
-            hookServo1.setPosition(0);
-            hookServo2.setPosition(1);
-        }
-        hPressed = gamepad2.b;
 
 
-        if (gamepad1.left_trigger > 0.5) {
+        if (hPause == false) {
+            if (gamepad2.b && hStart == false && hPressed == false) {
+                hStart = true;
+                hPressed = true;
+            } else if (!gamepad2.b && hStart == true) {
+                hPressed = false;
+                hookServo1.setPosition(0.6);
+                hookServo2.setPosition(0.4);
+            } else if (gamepad2.b && hStart == true && hPressed == false) {
+                hStart = false;
+                hPause = true;
+                hookServo1.setPosition(0);
+                hookServo2.setPosition(1);
+            }
+        } else {
+            if (!gamepad2.b) {
+                hPause = false;
+            }
+        }
+
+
+        if (gamepad2.left_trigger > 0.5) {
             arr = new double[]{-1, 1, -1, 1};
-        } else if (gamepad1.right_trigger > 0.5) {
+        } else if (gamepad2.right_trigger > 0.5) {
             arr = new double[]{1, -1, 1, -1};
         }
 
-        if(gamepad1.dpad_down){ arr[0] = -1;arr[1] = -1;arr[2] = -1;arr[3] = -1; }
-        else if(gamepad1.dpad_right){ arr[0] = 1;arr[1] = -1;arr[2] = -1;arr[3] = 1; }
-        else if(gamepad1.dpad_up){ arr[0] = 1;arr[1] = 1;arr[2] = 1;arr[3] = 1; }
-        else if(gamepad1.dpad_left){ arr[0] = -1;arr[1] = 1;arr[2] = 1;arr[3] = -1;}
+        /*if(gamepad2.x){
+            if(INPUTstarted){
+                IOMotor1.setPosition()
+                INPUTstarted = false;
+            }
+        }*/
+
+
 
         // SLOW MODE
-        if (gamepad1.a && !slowStart) {
-            slowStart = !slowStart;
+        if (slowPause == false) {
+            if (gamepad1.a && slowStart == false && slowPressed == false) {
+                slowStart = true;
+                slowPressed = true;
+
+            } else if (!gamepad1.a && slowStart == true) {
+                slowPressed = false;
+                arr[0] /= 4.5;
+                arr[1] /= 4.5;
+                arr[2] /= 4.5;
+                arr[3] /= 4.5;
+            } else if (gamepad1.a && slowStart == true && slowPressed == false) {
+                slowStart = false;
+                slowPause = true;
+            }
+        } else {
+            if (!gamepad1.a) {
+                slowPause = false;
+            }
         }
-        if (slowStart) {
-            arr[0] /= 4.5;
-            arr[1] /= 4.5;
-            arr[2] /= 4.5;
-            arr[3] /= 4.5;
-        }
-        slowStart = gamepad1.a;
+
+        //
 
         // Send calculated power to wheels
         bottomleftDrive.setPower(arr[2]);
@@ -259,32 +357,35 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         //flipperServo1.setPosition(servoPosition1);
         //flipperServo2.setPosition(servoPosition2);
 
+
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f), ANGLE (%.2f), X (%.2f), Y (%.2f)",
                 arr[0], arr[1], arr[2], arr[3], angle, leftStickX, leftStickY);
+        //telemetry.addData("VACUUM", "VStart (%2.f), VPressed (%2.f), VPause (%.2f)",
+        //vStart ? 1.5 : 0, vPressed ? 1.5 : 0, vPause ? 1.5 : 0);
+        //telemetry.addData("Motor Powers", "tleft (%.2f), tright (%.2f), bleft (%.2f), bright (%.2f)",
+        //topleftDrive.getPower(), toprightDrive.getPower(), bottomleftDrive.getPower(), bottomrightDrive.getPower());
 
 
         telemetry.addData("INPUT SERVOS: ", "first (%.5f), second (%.5f)",
-                clawServo1.getPosition(), clawServo2.getPosition());
-        telemetry.addData("HOOK SERVOS ", "first (%.2f), second (%.2f)",
-                hookServo1.getPosition(), hookServo2.getPosition());
+                IOMotor1.getPosition(), IOMotor2.getPosition());
+        //telemetry.addData("HOOK SERVOS ", "first (%.2f), second (%2.f)",
+                //hookServo1.getPosition(), hookServo2.getPosition());
+
+        //telemetry.addData("left Motor Position", topleftDrive.getCurrentPosition());
+
+        //telemetry.addData("elevator motor power", elevatorMotor.getPower());
+
+        //telemetry.addData("vacuumPower", vacuumMotor.getPower());
 
         telemetry.addData("EHEIGHT:", "height (%.2f)", eHeight);
+        telemetry.addData("gp1", "x (%d)", (gamepad1.x) ? 1 : -1);
 
-        ServoController scon = clawServo1.getController();
-        switch (scon.getPwmStatus())
-        {
-            case ENABLED:
-                telemetry.addLine("Controller enabled");
-                break;
-            case MIXED:
-                telemetry.addLine("Controller mixed");
-                break;
-            case DISABLED:
-                telemetry.addLine("Controller disabled");
-                break;
-        }
+        /*
+         * Code to run ONCE after the driver hits STOP
+         */
+
     }
 
     public void stop() {
