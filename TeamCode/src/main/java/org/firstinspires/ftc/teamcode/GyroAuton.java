@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name = "Move Forward", group = "Exercises")
-public class MoveForward extends LinearOpMode {
+@Autonomous(name = "Gyro Auton ", group = "Exercises")
+public class GyroAuton extends LinearOpMode {
     BNO055IMU               imu;    DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor centerMotor;
@@ -98,6 +98,7 @@ public class MoveForward extends LinearOpMode {
             leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        stop();
 
 
     }
@@ -130,8 +131,8 @@ public class MoveForward extends LinearOpMode {
         // wait for start button.
 
         waitForStart();
-        gyroDrive(5,1000000,0);
-        stop();
+        gyroDrive(5,10,0);
+
 
 
     }

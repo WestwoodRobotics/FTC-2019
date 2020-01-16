@@ -12,7 +12,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+//import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -21,12 +21,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-@Autonomous(name="Drive Avoid Imu", group="Exercises")
+@Autonomous(name="Test Parth", group="Exercises")
 //@Disabled
 public class TestParth extends LinearOpMode
 {
     DcMotor                 leftMotor, rightMotor;
-    TouchSensor             touch;
+    //TouchSensor             touch;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
     double                  globalAngle, power = .30, correction;
@@ -45,7 +45,7 @@ public class TestParth extends LinearOpMode
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // get a reference to touch sensor.
-        touch = hardwareMap.touchSensor.get("touch_sensor");
+  //      touch = hardwareMap.touchSensor.get("touch_sensor");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -105,7 +105,7 @@ public class TestParth extends LinearOpMode
 
             aButton = gamepad1.a;
             bButton = gamepad1.b;
-            touched = touch.isPressed();
+            //touched = touch.isPressed();
 
             if (touched || aButton || bButton)
             {
@@ -139,7 +139,7 @@ public class TestParth extends LinearOpMode
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        globalAngle = 0;
+            globalAngle = 0;
     }
 
     /**

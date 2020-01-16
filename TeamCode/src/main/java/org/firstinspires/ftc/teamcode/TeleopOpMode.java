@@ -161,20 +161,20 @@ public class TeleopOpMode  extends OpMode {
 
         /////////////
         if (rightTriggerPress && !leftTriggerPress) {
-            runIntakePower = 1;
+            runIntakePower = .8;
 
         }
         else if (leftTriggerPress && !rightTriggerPress){
-            runIntakePower = -1;
+            runIntakePower = -.8;
 
         }
         else if (!rightTriggerPress && !leftTriggerPress){
             runIntakePower = 0  ;
 
         }
-        else if(rightTriggerPress && !leftTriggerPress && gamepad2.dpad_down){
-            runIntakePower =-1;
-        }
+        //else if(rightTriggerPress && !leftTriggerPress && gamepad2.dpad_down){
+        //    runIntakePower =-.8;
+        //}
         else{
             runIntakePower = 0;
         }
@@ -207,7 +207,7 @@ public class TeleopOpMode  extends OpMode {
         else if (gamepad2.dpad_down){
             rightElevatorPower = -1;
             leftElevatorPower = -1;
-            runIntakePower = -1;
+            //  qqqqrunIntakePower = -1;
         }
         else {
             rightElevatorPower = 0;
