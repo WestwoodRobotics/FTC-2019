@@ -207,7 +207,7 @@ public class TeleopOpMode  extends OpMode {
         else if (gamepad2.dpad_down){
             rightElevatorPower = -1;
             leftElevatorPower = -1;
-            //  qqqqrunIntakePower = -1;
+            //  runIntakePower = -1;
         }
         else {
             rightElevatorPower = 0;

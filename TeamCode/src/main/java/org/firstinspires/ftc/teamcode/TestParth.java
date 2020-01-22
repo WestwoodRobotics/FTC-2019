@@ -12,6 +12,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -26,7 +27,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 public class TestParth extends LinearOpMode
 {
     DcMotor                 leftMotor, rightMotor;
-    //TouchSensor             touch;
+    //TouchSensor           touch;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
     double                  globalAngle, power = .30, correction;
@@ -40,6 +41,7 @@ public class TestParth extends LinearOpMode
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
 
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
