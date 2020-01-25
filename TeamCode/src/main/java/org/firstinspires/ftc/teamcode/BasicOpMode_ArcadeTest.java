@@ -62,10 +62,10 @@ public class BasicOpMode_ArcadeTest extends OpMode {
     private DcMotor topleftDrive = null;
     private DcMotor toprightDrive = null;
 
-    private DcMotor elevatorMotor = null;
+    //private DcMotor elevatorMotor = null;
 
-    private Servo clawServo1 = null, clawServo2 = null;
-    private Servo hookServo1 = null, hookServo2 = null;
+    //private Servo clawServo1 = null, clawServo2 = null;
+    //private Servo hookServo1 = null, hookServo2 = null;
 
     int vacuumPower = 0;
 
@@ -98,7 +98,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         topleftDrive = hardwareMap.get(DcMotor.class, "top_left_drive");
         toprightDrive = hardwareMap.get(DcMotor.class, "top_right_drive");
 
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
+        /*elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
 
         clawServo1 = hardwareMap.get(Servo.class, "claw_servo1");
         clawServo2 = hardwareMap.get(Servo.class, "claw_servo2");
@@ -107,7 +107,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
         hookServo1 = hardwareMap.get(Servo.class, "hook_servo1");
         hookServo2 = hardwareMap.get(Servo.class, "hook_servo2");
-
+        */
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -138,7 +138,6 @@ public class BasicOpMode_ArcadeTest extends OpMode {
      */
     @Override
     public void loop() {
-
         // Setup a variable for each drive wheel to save power level for telemetry
         //double bottomleftpower, bottomrightpower, topleftpower, toprightpower;
         double leftStickY = -1 * gamepad1.left_stick_y;
@@ -191,7 +190,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
 
 
-        if (gamepad2.y == true) {
+        /*if (gamepad2.y == true) {
             elevatorMotor.setPower(0.75);
             //eHeight += 1;
         } else if (gamepad2.a == true) { //2.a
@@ -226,7 +225,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             hookServo2.setPosition(1);
         }
         hPressed = gamepad2.b;
-
+        */
 
         if (gamepad1.left_trigger > 0.5) {
             arr = new double[]{-1, 1, -1, 1};
@@ -256,6 +255,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         bottomrightDrive.setPower(arr[3]);
         topleftDrive.setPower(arr[0]);
         toprightDrive.setPower(arr[1]);
+
         //flipperServo1.setPosition(servoPosition1);
         //flipperServo2.setPosition(servoPosition2);
 
@@ -265,15 +265,15 @@ public class BasicOpMode_ArcadeTest extends OpMode {
                 arr[0], arr[1], arr[2], arr[3], angle, leftStickX, leftStickY);
 
 
-        telemetry.addData("INPUT SERVOS: ", "first (%.5f), second (%.5f)",
+        /*telemetry.addData("INPUT SERVOS: ", "first (%.5f), second (%.5f)",
                 clawServo1.getPosition(), clawServo2.getPosition());
         telemetry.addData("HOOK SERVOS ", "first (%.2f), second (%.2f)",
                 hookServo1.getPosition(), hookServo2.getPosition());
+        */
+        //telemetry.addData("EHEIGHT:", "height (%.2f)", eHeight);
 
-        telemetry.addData("EHEIGHT:", "height (%.2f)", eHeight);
-
-        ServoController scon = clawServo1.getController();
-        switch (scon.getPwmStatus())
+        //ServoController scon = clawServo1.getController();
+        /*switch (scon.getPwmStatus())
         {
             case ENABLED:
                 telemetry.addLine("Controller enabled");
@@ -284,7 +284,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
             case DISABLED:
                 telemetry.addLine("Controller disabled");
                 break;
-        }
+        }*/
     }
 
     public void stop() {

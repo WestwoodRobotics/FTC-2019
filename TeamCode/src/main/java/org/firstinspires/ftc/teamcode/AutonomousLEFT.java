@@ -83,8 +83,9 @@ public class AutonomousLEFT extends LinearOpMode {
         //IOMotor1 = hardwareMap.get(Servo.class, "claw_servo1");
         //IOMotor2 = hardwareMap.get(Servo.class, "claw_servo2");
 
-        hookServo1 = hardwareMap.get(Servo.class, "hook_servo1");
-        hookServo2 = hardwareMap.get(Servo.class, "hook_servo2");
+        //hookServo1 = hardwareMap.get(Servo.class, "hook_servo1");
+        //hookServo2 = hardwareMap.get(Servo.class, "hook_servo2");
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
