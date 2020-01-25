@@ -35,12 +35,13 @@ public class TeleopOpMode  extends OpMode {
 
 
     //speed and button variables
-    Double SLOWNESS = .8;
+    Double SLOWNESS = .5;
     Double SPEED_MULTIPLIER = 1.25;
     Double IntakeSlow = 1.0;
 
-    boolean buttonStateSlow=true;
-    boolean numButtonSlow=true;
+    boolean buttonStateSlow=false;
+    boolean numButtonSlow=false;
+
     boolean leftTriggerPress = false;
     boolean rightTriggerPress = false;
 
@@ -127,6 +128,7 @@ public class TeleopOpMode  extends OpMode {
             }
         }
 
+
         else {
             numButtonSlow=true;
         }
@@ -161,7 +163,7 @@ public class TeleopOpMode  extends OpMode {
 
         /////////////
         if (rightTriggerPress && !leftTriggerPress) {
-            runIntakePower = .8;
+            runIntakePower = .5;
 
         }
         else if (leftTriggerPress && !rightTriggerPress){
@@ -237,12 +239,12 @@ public class TeleopOpMode  extends OpMode {
             leftPower  = gamepad1.left_stick_y * SLOWNESS;
             rightPower = gamepad1.right_stick_y * SLOWNESS ;
 
-        }else{
-            leftPower  = gamepad1.left_stick_y;
-            rightPower = gamepad1.right_stick_y;
-
-
-        }// Tank Drive
+        }
+        else{
+            leftPower = gamepad1.left_stick_y - .2;
+            rightPower = gamepad1.right_stick_y - .2;
+            centerPower = centerPower -.2;
+        }
 
 
 
@@ -255,7 +257,7 @@ public class TeleopOpMode  extends OpMode {
         runIntakeOpen.setPower(runIntakePower*IntakeSlow);
         centerDrive.setPower(centerPower);
         leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower*.9);
+        rightDrive.setPower(rightPower*.8);
         leftElevator.setPower(leftElevatorPower);
         rightElevator.setPower(rightElevatorPower);
 

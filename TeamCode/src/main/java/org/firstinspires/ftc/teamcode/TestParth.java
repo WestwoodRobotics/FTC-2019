@@ -35,7 +35,7 @@ public class TestParth extends LinearOpMode
     double                  globalAngle, power = .8, correction;
     boolean                 aButton, bButton, touched;
     private int requiredTicks;
-    private double inches = 24;
+    private double inches = 10;
 
     // called when init button is  pressed.
     @Override
@@ -110,28 +110,32 @@ public class TestParth extends LinearOpMode
 
 
 
-       /*
+
         requiredTicks=inchesToTicks(inches);
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
 
 
 
-            while (Math.abs(rightMotor.getCurrentPosition()) < requiredTicks)
+        /*
+
+        int delta = requiredTicks;
+            while (Math.abs(delta)> 100)
             {
+                delta = requiredTicks - rightMotor.getCurrentPosition();
                 run();
             }
             rotate(90,1);
-            */
-       int seconds = 10;
+          */
+
+
+        int seconds = 5;
        seconds = second(seconds);
        while(seconds > 0){
            //run();
@@ -184,7 +188,8 @@ public class TestParth extends LinearOpMode
         centerDrive.setPower(-power - correction);
 
     }
-    public int second(int sec){
+    public int second(int sec)
+    {
         return sec*110000;
     }
 
