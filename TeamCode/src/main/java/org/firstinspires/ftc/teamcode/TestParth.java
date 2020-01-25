@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //import com.qualcomm.robotcore.hardware.TouchSensor;
+import java.util.*;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -22,16 +23,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
+
 @Autonomous(name="Test Parth", group="Exercises")
 //@Disabled
 public class TestParth extends LinearOpMode
 {
-    DcMotor                 leftMotor, rightMotor;
+    DcMotor                 leftMotor, rightMotor, centerDrive;
     //TouchSensor           touch;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
-    double                  globalAngle, power = .30, correction;
+    double                  globalAngle, power = .8, correction;
     boolean                 aButton, bButton, touched;
+    private int requiredTicks;
+    private double inches = 24;
 
     // called when init button is  pressed.
     @Override
@@ -39,6 +43,7 @@ public class TestParth extends LinearOpMode
     {
         leftMotor = hardwareMap.dcMotor.get("leftDrive");
         rightMotor = hardwareMap.dcMotor.get("rightDrive");
+        centerDrive = hardwareMap.dcMotor.get("centerDrive");
 
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -83,60 +88,109 @@ public class TestParth extends LinearOpMode
 
         telemetry.addData("Mode", "running");
         telemetry.update();
+        telemetry.addData("Mode","before loop");
 
-        sleep(1000);
+
 
         // drive until end of period.
+        Calendar cal = Calendar.getInstance();
+        // Use gyro to drive in a straight line.
+           /* long startTime = cal.getTimeInMillis();
+            telemetry.addData("Mode","InLoop");
+            long currentTime =startTime;
+            while(currentTime<startTime+10000){
+                run();
+                currentTime =cal.getTimeInMillis();
+            }
+        telemetry.addData("Mode","out of loop");
+        rightMotor.setPower(0);
+        leftMotor.setPower(0);
+        stop();*/
 
-        while (opModeIsActive())
-        {
-            // Use gyro to drive in a straight line.
-            correction = checkDirection();
 
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", globalAngle);
-            telemetry.addData("3 correction", correction);
-            telemetry.update();
 
-            leftMotor.setPower(power - correction);
-            rightMotor.setPower(power + correction);
+
+       /*
+        requiredTicks=inchesToTicks(inches);
+
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
+
+
+
+            while (Math.abs(rightMotor.getCurrentPosition()) < requiredTicks)
+            {
+                run();
+            }
+            rotate(90,1);
+            */
+       int seconds = 10;
+       seconds = second(seconds);
+       while(seconds > 0){
+           //run();
+           run();
+           seconds--;
+           telemetry.addData("Mode", seconds);
+           if(!opModeIsActive()){
+               leftMotor.setPower(0);
+               rightMotor.setPower(0);
+               centerDrive.setPower(0);
+               stop();
+           }
+       }
+
+
+
+
+
 
             // We record the sensor values because we will test them in more than
             // one place with time passing between those places. See the lesson on
             // Timing Considerations to know why.
 
-            aButton = gamepad1.a;
-            bButton = gamepad1.b;
-            //touched = touch.isPressed();
 
-            if (touched || aButton || bButton)
-            {
-                // backup.
-                leftMotor.setPower(power);
-                rightMotor.setPower(power);
 
-                sleep(500);
-
-                // stop.
-                leftMotor.setPower(0);
-                rightMotor.setPower(0);
-
-                // turn 90 degrees right.
-                if (touched || aButton) rotate(-90, power);
-
-                // turn 90 degrees left.
-                if (bButton) rotate(90, power);
-            }
-        }
 
         // turn the motors off.
         rightMotor.setPower(0);
         leftMotor.setPower(0);
+        stop();
     }
 
     /**
      * Resets the cumulative angle tracking to zero.
      */
+
+    // Joshua's Code
+    public int inchesToTicks(double inches)
+    {
+        double ticksForward = inches*360/Math.PI;
+        int theTicksForward = (int)(Math.ceil(ticksForward));
+        return theTicksForward;
+    }
+    public void slideLeft(){
+        centerDrive.setPower(power + correction);
+
+    }
+
+    public void slideRight(){
+        centerDrive.setPower(-power - correction);
+
+    }
+    public int second(int sec){
+        return sec*110000;
+    }
+
+
+
+
     private void resetAngle()
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -180,7 +234,7 @@ public class TestParth extends LinearOpMode
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
         // to stay on a straight line.
-        double correction, angle, gain = .10;
+        double correction, angle, gain = .02;
 
         angle = getAngle();
 
@@ -245,4 +299,16 @@ public class TestParth extends LinearOpMode
         // reset angle tracking on new heading.
         resetAngle();
     }
+    public void run(){
+        correction = checkDirection();
+
+        telemetry.addData("1 imu heading", lastAngles.firstAngle);
+        telemetry.addData("2 global heading", globalAngle);
+        telemetry.addData("3 correction", correction);
+        telemetry.update();
+
+        leftMotor.setPower(power - correction);
+        rightMotor.setPower(power + correction);
+    }
+
 }

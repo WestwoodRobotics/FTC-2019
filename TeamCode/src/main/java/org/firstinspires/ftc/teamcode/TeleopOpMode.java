@@ -35,7 +35,7 @@ public class TeleopOpMode  extends OpMode {
 
 
     //speed and button variables
-    Double SLOWNESS = 0.4;
+    Double SLOWNESS = .8;
     Double SPEED_MULTIPLIER = 1.25;
     Double IntakeSlow = 1.0;
 
@@ -255,7 +255,7 @@ public class TeleopOpMode  extends OpMode {
         runIntakeOpen.setPower(runIntakePower*IntakeSlow);
         centerDrive.setPower(centerPower);
         leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower*.85);
+        rightDrive.setPower(rightPower*.9);
         leftElevator.setPower(leftElevatorPower);
         rightElevator.setPower(rightElevatorPower);
 
