@@ -19,8 +19,9 @@ public class TeleopOpMode  extends OpMode {
     private DcMotor centerDrive = null;
 
     //back Servos
-    private Servo leftBack;
-    private Servo rightBack;
+    //?\//private Servo leftBack;
+    //private Servo rightBack
+    //private Servo back;
 
 
     //elevator motors initialized
@@ -82,8 +83,9 @@ public class TeleopOpMode  extends OpMode {
         leftElevator = hardwareMap.get(DcMotor.class, "leftElevator");
         rightElevator = hardwareMap.get(DcMotor.class, "rightElevator");
 
-        leftBack = hardwareMap.servo.get("leftBack");
-        rightBack = hardwareMap.servo.get("rightBack");
+        //leftBack = hardwareMap.servo.get("leftBack");
+        //rightBack = hardwareMap.servo.get("rightBack");
+        //back = hardwareMap.servo.get("back");
 
         //sets direction of motors
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -133,6 +135,7 @@ public class TeleopOpMode  extends OpMode {
             numButtonSlow=true;
         }
         //Back Hook
+        /*
         if(gamepad1.y){
             leftBack.setPosition(180);
             rightBack.setPosition(0);
@@ -141,6 +144,18 @@ public class TeleopOpMode  extends OpMode {
             leftBack.setPosition(0);
             rightBack.setPosition(180);
         }
+        */
+        /*
+        if(gamepad1.left_bumper){
+            back.setPosition(90);
+        }
+        else if(gamepad1.right_bumper){
+            back.setPosition(0);
+        }
+
+         */
+
+
 
         //open intake
         if (gamepad2.left_trigger != 0 && gamepad2.right_trigger == 0){
@@ -163,11 +178,11 @@ public class TeleopOpMode  extends OpMode {
 
         /////////////
         if (rightTriggerPress && !leftTriggerPress) {
-            runIntakePower = .5;
+            runIntakePower = .75;
 
         }
         else if (leftTriggerPress && !rightTriggerPress){
-            runIntakePower = -.8;
+            runIntakePower = -1;
 
         }
         else if (!rightTriggerPress && !leftTriggerPress){
@@ -240,10 +255,9 @@ public class TeleopOpMode  extends OpMode {
             rightPower = gamepad1.right_stick_y * SLOWNESS ;
 
         }
-        else{
-            leftPower = gamepad1.left_stick_y - .2;
-            rightPower = gamepad1.right_stick_y - .2;
-            centerPower = centerPower -.2;
+        else {
+            leftPower = gamepad1.left_stick_y;
+            rightPower = gamepad1.right_stick_y;
         }
 
 

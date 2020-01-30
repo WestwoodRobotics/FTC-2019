@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //import com.qualcomm.robotcore.hardware.TouchSensor;
 import java.util.*;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -32,10 +34,11 @@ public class TestParth extends LinearOpMode
     //TouchSensor           touch;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
-    double                  globalAngle, power = .8, correction;
+    double                  globalAngle, power = .5, correction;
     boolean                 aButton, bButton, touched;
     private int requiredTicks;
     private double inches = 10;
+    private ElapsedTime     runtime = new ElapsedTime();
 
     // called when init button is  pressed.
     @Override
@@ -52,7 +55,7 @@ public class TestParth extends LinearOpMode
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // get a reference to touch sensor.
-  //      touch = hardwareMap.touchSensor.get("touch_sensor");
+        //      touch = hardwareMap.touchSensor.get("touch_sensor");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -74,7 +77,6 @@ public class TestParth extends LinearOpMode
         // make sure the imu gyro is calibrated before continuing.
         while (!isStopRequested() && !imu.isGyroCalibrated())
         {
-            sleep(50);
             idle();
         }
 
@@ -84,7 +86,11 @@ public class TestParth extends LinearOpMode
 
         // wait for start button.
 
+
+
         waitForStart();
+        runtime.reset();
+
 
         telemetry.addData("Mode", "running");
         telemetry.update();
@@ -92,38 +98,65 @@ public class TestParth extends LinearOpMode
 
 
 
+        //leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // 400 ticks per motor
+        /*
+        int endEncodeTicks =  4000;
+        int delta = 101;
+        while (Math.abs(delta)> 100)
+        {
+            delta = endEncodeTicks - rightMotor.getCurrentPosition();
+            run();
+        }
+        rotate(45,1);
+
+         */
+        ///while(opModeIsActive())
+        //{
+        //    run();
+        //}
+        //(2/3) of a second is 1 block
+
+
+        runTime(1.5);
+        rotate(90-20,.5);
+        runTime(1.5);
+        slideLeft(1.0);
+        slideRight(1.0);
+
+        telemetry.addData("mode","outLoop");
+
+        rightMotor.setPower(0);
+        leftMotor.setPower(0);
+        stop();
+
+
+        /*
+
+
         // drive until end of period.
         Calendar cal = Calendar.getInstance();
         // Use gyro to drive in a straight line.
-           /* long startTime = cal.getTimeInMillis();
+            long startTime = cal.getTimeInMillis();
             telemetry.addData("Mode","InLoop");
             long currentTime =startTime;
             while(currentTime<startTime+10000){
                 run();
                 currentTime =cal.getTimeInMillis();
+                if(!opModeIsActive()){
+                    leftMotor.setPower(0);
+                    rightMotor.setPower(0);
+                    stop();
+                }
             }
+
+         */
         telemetry.addData("Mode","out of loop");
         rightMotor.setPower(0);
         leftMotor.setPower(0);
-        stop();*/
-
-
-
-
-
-        requiredTicks=inchesToTicks(inches);
-
-        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-
-
-
-
-
-
-        /*
+        stop();
+ /*
 
         int delta = requiredTicks;
             while (Math.abs(delta)> 100)
@@ -135,43 +168,15 @@ public class TestParth extends LinearOpMode
           */
 
 
-        int seconds = 5;
-       seconds = second(seconds);
-       while(seconds > 0){
-           //run();
-           run();
-           seconds--;
-           telemetry.addData("Mode", seconds);
-           if(!opModeIsActive()){
-               leftMotor.setPower(0);
-               rightMotor.setPower(0);
-               centerDrive.setPower(0);
-               stop();
-           }
-       }
-
-
-
-
-
-
-            // We record the sensor values because we will test them in more than
-            // one place with time passing between those places. See the lesson on
-            // Timing Considerations to know why.
-
-
-
-
+        // We record the sensor values because we will test them in more than
+        // one place with time passing between those places. See the lesson on
+        // Timing Considerations to know why.
         // turn the motors off.
-        rightMotor.setPower(0);
-        leftMotor.setPower(0);
-        stop();
-    }
 
+    }
     /**
      * Resets the cumulative angle tracking to zero.
      */
-
     // Joshua's Code
     public int inchesToTicks(double inches)
     {
@@ -179,18 +184,20 @@ public class TestParth extends LinearOpMode
         int theTicksForward = (int)(Math.ceil(ticksForward));
         return theTicksForward;
     }
-    public void slideLeft(){
-        centerDrive.setPower(power + correction);
+    public void slideLeft(double seconds){
+        while(opModeIsActive()&& runtime.seconds()<seconds){
+            centerDrive.setPower(power - correction);
+        }
+
 
     }
 
-    public void slideRight(){
-        centerDrive.setPower(-power - correction);
+    public void slideRight(double seconds){
+        while(opModeIsActive()&& runtime.seconds()<seconds){
+            centerDrive.setPower(-power + correction);
+        }
 
-    }
-    public int second(int sec)
-    {
-        return sec*110000;
+
     }
 
 
@@ -200,7 +207,7 @@ public class TestParth extends LinearOpMode
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            globalAngle = 0;
+        globalAngle = 0;
     }
 
     /**
@@ -304,6 +311,11 @@ public class TestParth extends LinearOpMode
         // reset angle tracking on new heading.
         resetAngle();
     }
+    public void runTime(double seconds){
+        while(opModeIsActive()&& runtime.seconds()<seconds){
+            run();
+        }
+    }
     public void run(){
         correction = checkDirection();
 
@@ -315,5 +327,6 @@ public class TestParth extends LinearOpMode
         leftMotor.setPower(power - correction);
         rightMotor.setPower(power + correction);
     }
+
 
 }
