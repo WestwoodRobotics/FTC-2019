@@ -34,7 +34,7 @@ public class TestParth extends LinearOpMode
     //TouchSensor           touch;
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
-    double                  globalAngle, power = .5, correction;
+    double                  globalAngle, power = .8, correction;
     boolean                 aButton, bButton, touched;
     private int requiredTicks;
     private double inches = 10;
@@ -119,13 +119,15 @@ public class TestParth extends LinearOpMode
         //(2/3) of a second is 1 block
 
 
-        runTime(1.5);
-        rotate(90-20,.5);
-        runTime(1.5);
-        slideLeft(1.0);
-        slideRight(1.0);
+        //runTime(.5);
 
-        telemetry.addData("mode","outLoop");
+
+
+        runTime(1);
+        rotate(-70,.5);
+        runTimeBack(1.5);
+
+
 
         rightMotor.setPower(0);
         leftMotor.setPower(0);
@@ -185,17 +187,22 @@ public class TestParth extends LinearOpMode
         return theTicksForward;
     }
     public void slideLeft(double seconds){
+        runtime.reset();
         while(opModeIsActive()&& runtime.seconds()<seconds){
-            centerDrive.setPower(power - correction);
+            centerDrive.setPower(power);
         }
+        double sleeping = seconds*1000;
+        sleep((int)sleeping);
 
 
     }
 
     public void slideRight(double seconds){
         while(opModeIsActive()&& runtime.seconds()<seconds){
-            centerDrive.setPower(-power + correction);
+            centerDrive.setPower(-power);
         }
+        double sleeping = seconds*1000;
+        sleep((int)sleeping);
 
 
     }
@@ -266,6 +273,7 @@ public class TestParth extends LinearOpMode
      */
     private void rotate(int degrees, double power)
     {
+        runtime.reset();
         double  leftPower, rightPower;
 
         // restart imu movement tracking.
@@ -306,15 +314,33 @@ public class TestParth extends LinearOpMode
         leftMotor.setPower(0);
 
         // wait for rotation to stop.
-        sleep(1000);
+        sleep(1500);
 
         // reset angle tracking on new heading.
         resetAngle();
     }
     public void runTime(double seconds){
+        runtime.reset();
         while(opModeIsActive()&& runtime.seconds()<seconds){
             run();
         }
+    }
+    public void runTimeBack(double seconds){
+        runtime.reset();
+        while(opModeIsActive()&& runtime.seconds()<seconds){
+            runBack();
+        }
+    }
+    public void runBack(){
+        correction = checkDirection();
+
+        telemetry.addData("1 imu heading", lastAngles.firstAngle);
+        telemetry.addData("2 global heading", globalAngle);
+        telemetry.addData("3 correction", correction);
+        telemetry.update();
+
+        leftMotor.setPower(-power);
+        rightMotor.setPower(-power+.2);
     }
     public void run(){
         correction = checkDirection();
@@ -323,6 +349,7 @@ public class TestParth extends LinearOpMode
         telemetry.addData("2 global heading", globalAngle);
         telemetry.addData("3 correction", correction);
         telemetry.update();
+        
 
         leftMotor.setPower(power - correction);
         rightMotor.setPower(power + correction);
