@@ -19,8 +19,8 @@ public class TeleopOpMode  extends OpMode {
     private DcMotor centerDrive = null;
 
     //back Servos
-    //?\//private Servo leftBack;
-    //private Servo rightBack
+    private Servo leftBack;
+    private Servo rightBack;
     //private Servo back;
 
 
@@ -83,8 +83,8 @@ public class TeleopOpMode  extends OpMode {
         leftElevator = hardwareMap.get(DcMotor.class, "leftElevator");
         rightElevator = hardwareMap.get(DcMotor.class, "rightElevator");
 
-        //leftBack = hardwareMap.servo.get("leftBack");
-        //rightBack = hardwareMap.servo.get("rightBack");
+        leftBack = hardwareMap.servo.get("leftBack");
+        rightBack = hardwareMap.servo.get("rightBack");
         //back = hardwareMap.servo.get("back");
 
         //sets direction of motors
@@ -135,16 +135,16 @@ public class TeleopOpMode  extends OpMode {
             numButtonSlow=true;
         }
         //Back Hook
-        /*
+
         if(gamepad1.y){
-            leftBack.setPosition(180);
+            leftBack.setPosition(0);
             rightBack.setPosition(0);
         }
         else if(gamepad1.a){
-            leftBack.setPosition(0);
-            rightBack.setPosition(180);
+            leftBack.setPosition(10);
+            rightBack.setDirection(leftBack.getDirection());
         }
-        */
+
         /*
         if(gamepad1.left_bumper){
             back.setPosition(90);
@@ -152,8 +152,8 @@ public class TeleopOpMode  extends OpMode {
         else if(gamepad1.right_bumper){
             back.setPosition(0);
         }
+        */
 
-         */
 
 
 
@@ -178,7 +178,7 @@ public class TeleopOpMode  extends OpMode {
 
         /////////////
         if (rightTriggerPress && !leftTriggerPress) {
-            runIntakePower = .75;
+            runIntakePower = .8;
 
         }
         else if (leftTriggerPress && !rightTriggerPress){
