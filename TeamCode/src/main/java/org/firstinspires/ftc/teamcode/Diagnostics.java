@@ -66,8 +66,14 @@ public class Diagnostics extends OpMode {
 
     //private DcMotor vacuumMotor = null;
 
-    private Servo clawServo1 = null, clawServo2 = null;
-    private Servo hookServo1 = null, hookServo2 = null;
+    private DcMotor elevatorMotorleft = null;
+    private DcMotor elevatorMotorright = null;
+
+    private Servo clawServo = null;
+    private Servo leftArmServo = null;
+    private Servo hookServo = null;
+    private Servo rightArmServo = null;
+
 
     int vacuumPower = 0;
 
@@ -110,14 +116,15 @@ public class Diagnostics extends OpMode {
         //flipperServo1 = hardwareMap.get(Servo.class, "flipper_servo1");
         //flipperServo2 = hardwareMap.get(Servo.class, "flipper_servo2");
 
-        clawServo1 = hardwareMap.get(Servo.class, "claw_servo1");
-        clawServo2 = hardwareMap.get(Servo.class, "claw_servo2");
+        clawServo = hardwareMap.get(Servo.class, "claw_servo");
+        clawServo.setDirection(Servo.Direction.REVERSE);
+        leftArmServo = hardwareMap.get(Servo.class, "left_arm_servo");
 
-        clawServo1.setDirection(Servo.Direction.REVERSE);
 
-        hookServo1 = hardwareMap.get(Servo.class, "hook_servo1");
-        hookServo2 = hardwareMap.get(Servo.class, "hook_servo2");
 
+        hookServo = hardwareMap.get(Servo.class, "hook_servo");
+        rightArmServo = hardwareMap.get(Servo.class, "right_arm_servo");
+        rightArmServo.setDirection(Servo.Direction.REVERSE);
 
         //vacuumMotor = hardwareMap.get(DcMotor.class, "vacuum_motor");
         // Most robots need the motor on one side to be reversed to drive forward
@@ -161,43 +168,27 @@ public class Diagnostics extends OpMode {
     public void loop() {
 
         if (gamepad1.x) {
-            hookServo1.setPosition(1);
+            hookServo.setPosition(0.5);
         } else {
-            hookServo1.setPosition(0);
+            hookServo.setPosition(0);
         }
         if (gamepad1.a) {
-            hookServo2.setPosition(1);
+            clawServo.setPosition(0.5);
         } else {
-            hookServo2.setPosition(0);
+            clawServo.setPosition(0);
         }
         if (gamepad1.y) {
-            clawServo1.setPosition(1);
+            leftArmServo.setPosition(1);
         } else {
-            clawServo1.setPosition(0);
+            leftArmServo.setPosition(0);
         }
         if (gamepad1.b) {
-            clawServo2.setPosition(1);
+            rightArmServo.setPosition(1);
         } else {
-            clawServo2.setPosition(0);
+            rightArmServo.setPosition(0);
         }
 
-        bottomleftDrive.setPower(gamepad1.left_stick_x);
-        topleftDrive.setPower(gamepad1.left_stick_y);
 
-        bottomrightDrive.setPower(gamepad1.right_stick_x);
-        toprightDrive.setPower(gamepad1.right_stick_y);
-
-        if(gamepad2.x && !wasPressed){
-            CLOSED = !CLOSED;
-        }
-        if(CLOSED){
-            telemetry.addData("yayeet", "");
-        }
-        else{
-            telemetry.addData("nope", "");
-        }
-
-        wasPressed = gamepad2.x;
     }
 
     public void stop() {

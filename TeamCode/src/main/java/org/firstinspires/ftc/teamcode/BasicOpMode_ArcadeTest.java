@@ -32,8 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.lang.Math;
@@ -62,10 +62,13 @@ public class BasicOpMode_ArcadeTest extends OpMode {
     private DcMotor topleftDrive = null;
     private DcMotor toprightDrive = null;
 
-    //private DcMotor elevatorMotor = null;
+    private DcMotor elevatorMotorleft = null;
+    private DcMotor elevatorMotorright = null;
 
-    //private Servo clawServo1 = null, clawServo2 = null;
-    //private Servo hookServo1 = null, hookServo2 = null;
+    private Servo clawServo = null;
+    private Servo leftArmServo = null;
+    private Servo hookServo = null;
+    private Servo rightArmServo = null;
 
     int vacuumPower = 0;
 
@@ -74,14 +77,16 @@ public class BasicOpMode_ArcadeTest extends OpMode {
     boolean vPause = false;
 
     boolean slowStart = false, slowPressed = false;
-    boolean cStart = false, cPressed = false;
-    boolean hStart = false, hPressed = false;
+    boolean xStart = false, xPressed = false;
+    boolean bStart = false, bPressed = false;
 
     boolean INPUTstarted = false;
 
     boolean IOstart = false, IOpressed = false, IOpause = false;
 
     double eHeight = 0;
+    private boolean aPressed;
+    private boolean aStart;
 
     /*
     3 * Code to run ONCE when the driver hits INIT
@@ -98,22 +103,24 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         topleftDrive = hardwareMap.get(DcMotor.class, "top_left_drive");
         toprightDrive = hardwareMap.get(DcMotor.class, "top_right_drive");
 
-        /*elevatorMotor = hardwareMap.get(DcMotor.class, "elevator_motor");
+        elevatorMotorright = hardwareMap.get(DcMotor.class, "elevator_motor_right");
+        elevatorMotorleft = hardwareMap.get(DcMotor.class, "elevator_motor_left");
 
-        clawServo1 = hardwareMap.get(Servo.class, "claw_servo1");
-        clawServo2 = hardwareMap.get(Servo.class, "claw_servo2");
+        clawServo = hardwareMap.get(Servo.class, "claw_servo");
+        leftArmServo = hardwareMap.get(Servo.class, "left_arm_servo");
 
-        clawServo1.setDirection(Servo.Direction.REVERSE);
+        clawServo.setDirection(Servo.Direction.REVERSE);
 
-        hookServo1 = hardwareMap.get(Servo.class, "hook_servo1");
-        hookServo2 = hardwareMap.get(Servo.class, "hook_servo2");
-        */
+        hookServo = hardwareMap.get(Servo.class, "hook_servo");
+        rightArmServo = hardwareMap.get(Servo.class, "right_arm_servo");
+        rightArmServo.setDirection(Servo.Direction.REVERSE);
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        bottomleftDrive.setDirection(DcMotor.Direction.FORWARD);
-        bottomrightDrive.setDirection(DcMotor.Direction.REVERSE);
-        topleftDrive.setDirection(DcMotor.Direction.FORWARD);
-        toprightDrive.setDirection(DcMotor.Direction.REVERSE);
+        bottomleftDrive.setDirection(DcMotor.Direction.REVERSE);
+        bottomrightDrive.setDirection(DcMotor.Direction.FORWARD);
+        topleftDrive.setDirection(DcMotor.Direction.REVERSE);
+        toprightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -190,42 +197,41 @@ public class BasicOpMode_ArcadeTest extends OpMode {
 
 
 
-        /*if (gamepad2.y == true) {
-            elevatorMotor.setPower(0.75);
-            //eHeight += 1;
-        } else if (gamepad2.a == true) { //2.a
-            elevatorMotor.setPower(-0.75);
-            //eHeight -= 1;
-        } else {
-            elevatorMotor.setPower(0);
-        }
 
-        if (gamepad1.x && !cPressed) {
-            cStart = !cStart;
+        if (gamepad2.x && !xPressed) {
+            xStart = !xStart;
         }
-        if (cStart) {
-            clawServo1.setPosition(0.5);
-            clawServo2.setPosition(0.5);
+        if (xStart) {
+            rightArmServo.setPosition(1);
+            leftArmServo.setPosition(1);
         }
         else{ // The issue is this if block right here
-            clawServo1.setPosition(0);
-            clawServo2.setPosition(0);
+            rightArmServo.setPosition(0);
+            leftArmServo.setPosition(0);
         }
-        cPressed = gamepad1.x;
+        xPressed = gamepad2.x;
 
-        if (gamepad2.b && !hPressed) {
-            hStart = !hStart;
+        if (gamepad2.b && !bPressed) {
+            bStart = !bStart;
         }
-        if (hStart) {
-            hookServo1.setPosition(0.5);
-            hookServo2.setPosition(0.5);
+        if (bStart) {
+            hookServo.setPosition(0.5);
         }
         else{
-            hookServo1.setPosition(0);
-            hookServo2.setPosition(1);
+            hookServo.setPosition(0);
         }
-        hPressed = gamepad2.b;
-        */
+        bPressed = gamepad2.b;
+
+        if (gamepad2.a && !aPressed) {
+            aStart = !aStart;
+        }
+        if (aStart) {
+            clawServo.setPosition(0.5);
+        }
+        else{
+            clawServo.setPosition(0);
+        }
+        aPressed = gamepad2.a;
 
         if (gamepad1.left_trigger > 0.5) {
             arr = new double[]{-1, 1, -1, 1};
@@ -255,9 +261,9 @@ public class BasicOpMode_ArcadeTest extends OpMode {
         bottomrightDrive.setPower(arr[3]);
         topleftDrive.setPower(arr[0]);
         toprightDrive.setPower(arr[1]);
+        elevatorMotorleft.setPower(gamepad2.left_stick_y);
+        elevatorMotorright.setPower(gamepad2.left_stick_y);
 
-        //flipperServo1.setPosition(servoPosition1);
-        //flipperServo2.setPosition(servoPosition2);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -265,26 +271,7 @@ public class BasicOpMode_ArcadeTest extends OpMode {
                 arr[0], arr[1], arr[2], arr[3], angle, leftStickX, leftStickY);
 
 
-        /*telemetry.addData("INPUT SERVOS: ", "first (%.5f), second (%.5f)",
-                clawServo1.getPosition(), clawServo2.getPosition());
-        telemetry.addData("HOOK SERVOS ", "first (%.2f), second (%.2f)",
-                hookServo1.getPosition(), hookServo2.getPosition());
-        */
-        //telemetry.addData("EHEIGHT:", "height (%.2f)", eHeight);
 
-        //ServoController scon = clawServo1.getController();
-        /*switch (scon.getPwmStatus())
-        {
-            case ENABLED:
-                telemetry.addLine("Controller enabled");
-                break;
-            case MIXED:
-                telemetry.addLine("Controller mixed");
-                break;
-            case DISABLED:
-                telemetry.addLine("Controller disabled");
-                break;
-        }*/
     }
 
     public void stop() {
